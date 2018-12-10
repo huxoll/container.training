@@ -1,6 +1,6 @@
 name: healthchecks
 
-# Health checks
+# Health checks and auto-rollbacks
 
 (New in Docker Engine 1.12)
 
@@ -61,7 +61,7 @@ name: healthchecks
 
 ---
 
-## Automated rollbacks
+## Enabling health checks and auto-rollbacks
 
 Here is a comprehensive example using the CLI:
 
@@ -96,6 +96,8 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
   hasher:
     build: dockercoins/hasher
     image: ${REGISTRY-127.0.0.1:5000}/hasher:${TAG-latest}
+    healthcheck:
+      test: curl -f http://localhost/ || exit 1
     deploy:
       replicas: 7
       update_config:
@@ -109,7 +111,9 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
 
 ---
 
-## Enabling auto-rollback
+## Enabling auto-rollback in dockercoins
+
+We need to update our services with a healthcheck.
 
 .exercise[
 
@@ -118,35 +122,9 @@ We will use the following Compose file (`stacks/dockercoins+healthcheck.yml`):
   cd ~/container.training/stacks
   ```
 
-- Deploy the updated stack:
+- Deploy the updated stack with healthchecks built-in:
   ```bash
-  docker stack deploy dockercoins --compose-file dockercoins+healthcheck.yml
-  ```
-
-]
-
-This will also scale the `hasher` service to 7 instances.
-
----
-
-## Visualizing a rolling update
-
-First, let's make an "innocent" change and deploy it.
-
-.exercise[
-
-- Update the `sleep` delay in the code:
-  ```bash
-  sed -i "s/sleep 0.1/sleep 0.2/" dockercoins/hasher/hasher.rb
-  ```
-
-- Build, ship, and run the new image:
-  ```bash
-  export TAG=v0.5
-  docker-compose -f dockercoins+healthcheck.yml build
-  docker-compose -f dockercoins+healthcheck.yml push
-  docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:$TAG
+  docker stack deploy --compose-file dockercoins+healthcheck.yml dockercoins 
   ```
 
 ]
@@ -155,7 +133,11 @@ First, let's make an "innocent" change and deploy it.
 
 ## Visualizing an automated rollback
 
-And now, a breaking change that will cause the health check to fail:
+- Here's a good example of why healthchecks are necessary
+
+- This breaking change will prevent the app from listening on the correct port
+
+- The container still runs fine, it just won't accept connections on port 80
 
 .exercise[
 
@@ -166,11 +148,10 @@ And now, a breaking change that will cause the health check to fail:
 
 - Build, ship, and run the new image:
   ```bash
-  export TAG=v0.6
+  export TAG=v0.3
   docker-compose -f dockercoins+healthcheck.yml build
   docker-compose -f dockercoins+healthcheck.yml push
-  docker service update dockercoins_hasher \
-           --detach=false --image=127.0.0.1:5000/hasher:$TAG
+  docker service update --image=127.0.0.1:5000/hasher:$TAG dockercoins_hasher
   ```
 
 ]

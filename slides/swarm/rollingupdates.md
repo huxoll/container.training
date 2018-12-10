@@ -1,72 +1,44 @@
 # Rolling updates
 
-- Let's change a scaled service: `worker`
+- Let's force an update on hasher to watch it update
 
 .exercise[
 
-- Edit `worker/worker.py`
-
-- Locate the `sleep` instruction and change the delay
-
-- Build, ship, and run our changes:
+- First lets scale up hasher to 7 replicas:
   ```bash
-  export TAG=v0.4
-  docker-compose -f dockercoins.yml build
-  docker-compose -f dockercoins.yml push
-  docker stack deploy -c dockercoins.yml dockercoins
+  docker service scale dockercoins_hasher=7
+  ```
+
+- Force a rolling update (replace containers) to different image:
+  ```bash
+  docker service update --image 127.0.0.1:5000/hasher:v0.1 dockercoins_hasher
   ```
 
 ]
 
----
+- You can run `docker events` in a seperate `node1` shell to see Swarm actions
 
-## Viewing our update as it rolls out
-
-.exercise[
-
-- Check the status of the `dockercoins_worker` service:
-  ```bash
-  watch docker service ps dockercoins_worker
-  ```
-
-<!-- ```wait dockercoins_worker.1``` -->
-<!-- ```keys ^C``` -->
-
-- Hide the tasks that are shutdown:
-  ```bash
-  watch -n1 "docker service ps dockercoins_worker | grep -v Shutdown.*Shutdown"
-  ```
-
-<!-- ```wait dockercoins_worker.1``` -->
-<!-- ```keys ^C``` -->
-
-]
-
-If you had stopped the workers earlier, this will automatically restart them.
-
-By default, SwarmKit does a rolling upgrade, one instance at a time.
-
-We should therefore see the workers being updated one my one.
+- You can use `--force` to replace containers without a config change
 
 ---
 
 ## Changing the upgrade policy
 
-- We can set upgrade parallelism (how many instances to update at the same time)
-
-- And upgrade delay (how long to wait between two batches of instances)
+- We can change many options on how updates happen
 
 .exercise[
 
-- Change the parallelism to 2 and the delay to 5 seconds:
+- Change the parallelism to 2, and the max failed container updates to 25%:
   ```bash
-    docker service update dockercoins_worker \
-      --update-parallelism 2 --update-delay 5s
+    docker service update --update-parallelism 2 \
+      --update-max-failure-ratio .25 dockercoins_hasher
   ```
 
 ]
 
-The current upgrade will continue at a faster pace.
+- No containers were replaced, this is called a "no op" change 
+
+- Service metadata-only changes don't require orchestrator operations
 
 ---
 
@@ -90,15 +62,17 @@ The current upgrade will continue at a faster pace.
 
 - At any time (e.g. before the upgrade is complete), we can rollback:
 
-  - by editing the Compose file and redeploying;
+  - by editing the Compose file and redeploying
 
-  - or with the special `--rollback` flag
+  - by using the special `--rollback` flag with `service update`
+
+  - by using `docker service rollback`
 
 .exercise[
 
-- Try to rollback the service:
+- Try to rollback the webui service:
   ```bash
-  docker service update dockercoins_worker --rollback
+  docker service rollback dockercoins_webui
   ```
 
 ]
@@ -110,6 +84,8 @@ What happens with the web UI graph?
 ## The fine print with rollback
 
 - Rollback reverts to the previous service definition
+
+  - see `PreviousSpec` in `docker service inspect <servicename>`
 
 - If we visualize successive updates as a stack:
 

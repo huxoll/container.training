@@ -10,9 +10,10 @@
 - And run this little for loop:
   ```bash
     cd ~/container.training/dockercoins
-    REGISTRY=127.0.0.1:5000 TAG=v1
+    export REGISTRY=127.0.0.1:5000
+    export TAG=v0.1
     for SERVICE in hasher rng webui worker; do
-      docker tag dockercoins_$SERVICE $REGISTRY/$SERVICE:$TAG
+      docker build -t $REGISTRY/$SERVICE:$TAG ./$SERVICE
       docker push $REGISTRY/$SERVICE
     done
   ```
@@ -119,12 +120,12 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Start the other services:
   ```bash
-  REGISTRY=127.0.0.1:5000
-  TAG=v1
-  for SERVICE in hasher rng webui worker; do
-    docker service create --network dockercoins --detach=true \
-           --name $SERVICE $REGISTRY/$SERVICE:$TAG
-  done
+    export REGISTRY=127.0.0.1:5000
+    export TAG=v0.1
+    for SERVICE in hasher rng webui worker; do
+      docker service create --network dockercoins --detach=true \
+        --name $SERVICE $REGISTRY/$SERVICE:$TAG
+    done
   ```
 
 ]
@@ -141,7 +142,7 @@ It alters the code path for `docker run`, so it is allowed only under strict cir
 
 - Update `webui` so that we can connect to it from outside:
   ```bash
-  docker service update webui --publish-add 8000:80 --detach=false
+  docker service update webui --publish-add 8000:80
   ```
 
 ]
@@ -197,7 +198,7 @@ It has been replaced by the new version, with port 80 accessible from outside.
 
 - Bring up more workers:
   ```bash
-  docker service update worker --replicas 10 --detach=false
+  docker service update worker --replicas 10
   ```
 
 - Check the result in the web UI
@@ -235,7 +236,7 @@ You should see the performance peaking at 10 hashes/s (like before).
 - Re-create the `rng` service with *global scheduling*:
   ```bash
     docker service create --name rng --network dockercoins --mode global \
-      --detach=false $REGISTRY/rng:$TAG
+      $REGISTRY/rng:$TAG
   ```
 
 - Look at the result in the web UI
@@ -258,13 +259,11 @@ class: extra-details
 
 - This might change in the future (after all, it was possible in 1.12 RC!)
 
-- As of Docker Engine 17.05, other parameters requiring to `rm`/`create` the service are:
+- As of Docker Engine 18.03, other parameters requiring to `rm`/`create` the service are:
 
   - service name
 
   - hostname
-
-  - network
 
 ---
 

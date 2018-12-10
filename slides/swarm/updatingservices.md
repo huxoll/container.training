@@ -14,11 +14,12 @@
 
 ---
 
-## Updating a single service the hard way
+## Updating a single service with `service update`
 
 - To update a single service, we could do the following:
   ```bash
-  REGISTRY=localhost:5000 TAG=v0.3
+  export REGISTRY=127.0.0.1:5000
+  export TAG=v0.2
   IMAGE=$REGISTRY/dockercoins_webui:$TAG
   docker build -t $IMAGE webui/
   docker push $IMAGE
@@ -31,11 +32,11 @@
 
 ---
 
-## Updating services the easy way
+## Updating services with `stack deploy`
 
 - With the Compose integration, all we have to do is:
   ```bash
-  export TAG=v0.3
+  export TAG=v0.2
   docker-compose -f composefile.yml build
   docker-compose -f composefile.yml push
   docker stack deploy -c composefile.yml nameofstack
@@ -47,6 +48,8 @@
 
 - We don't need to learn new commands!
 
+- It will diff each service and only update ones that changed
+
 ---
 
 ## Changing the code
@@ -55,25 +58,10 @@
 
 .exercise[
 
-- Edit the file `webui/files/index.html`:
+- Update the size of text on our webui:
   ```bash
-  vi dockercoins/webui/files/index.html
+  sed -i "s/15px/50px/" dockercoins/webui/files/index.html
   ```
-
-  <!-- ```wait <title>``` -->
-
-- Locate the `font-size` CSS attribute and increase it (at least double it)
-
-  <!--
-  ```keys /font-size```
-  ```keys ^J```
-  ```keys lllllllllllllcw45px```
-  ```keys ^[``` ]
-  ```keys :wq```
-  ```keys ^J```
-  -->
-
-- Save and exit
 
 ]
 
@@ -92,13 +80,15 @@
 
 - Build, ship, and run:
   ```bash
-  export TAG=v0.3
+  export TAG=v0.2
   docker-compose -f dockercoins.yml build
   docker-compose -f dockercoins.yml push
   docker stack deploy -c dockercoins.yml dockercoins
   ```
 
 ]
+
+- Because we're tagging all images in this demo v0.2, deploy will update all apps, FYI
 
 ---
 

@@ -35,33 +35,7 @@ class: in-person
 
 ## Building our full cluster
 
-- We could SSH to nodes 3, 4, 5; and copy-paste the command
-
---
-
-class: in-person
-
-- Or we could use the AWESOME POWER OF THE SHELL!
-
---
-
-class: in-person
-
-![Mario Red Shell](images/mario-red-shell.png)
-
---
-
-class: in-person
-
-- No, not *that* shell
-
----
-
-class: in-person
-
-## Let's form like Swarm-tron
-
-- Let's get the token, and loop over the remaining nodes with SSH
+- Let's get the token, and use a one-liner for the remaining node with SSH
 
 .exercise[
 
@@ -70,11 +44,9 @@ class: in-person
   TOKEN=$(docker swarm join-token -q manager)
   ```
 
-- Loop over the 3 remaining nodes:
+- Add the remaining node:
   ```bash
-    for NODE in node3 node4 node5; do
-      ssh $NODE docker swarm join --token $TOKEN node1:2377
-    done
+    ssh node3 docker swarm join --token $TOKEN node1:2377
   ```
 
 ]
@@ -159,42 +131,50 @@ class: self-paced
 
 - 5 managers = 2 failures (or 1 failure during 1 maintenance)
 
-- 7 managers and more = now you might be overdoing it a little bit
+- 7 managers and more = now you might be overdoing it for most designs
+
+.footnote[
+
+ see [Docker's admin guide](https://docs.docker.com/engine/swarm/admin_guide/#add-manager-nodes-for-fault-tolerance) 
+ on node failure and datacenter redundancy
+
+]
 
 ---
 
 ## Why not have *all* nodes be managers?
 
-- Intuitively, it's harder to reach consensus in larger groups
-
 - With Raft, writes have to go to (and be acknowledged by) all nodes
 
-- More nodes = more network traffic
+- Thus, it's harder to reach consensus in larger groups
 
-- Bigger network = more latency
+- Only one manager is Leader (writable), so more managers ≠ more capacity
+
+- Managers should be &#60; 10ms latency from each other
+
+- These design parameters lead us to recommended designs
 
 ---
 
 ## What would McGyver do?
 
-- If some of your machines are more than 10ms away from each other,
-  <br/>
-  try to break them down in multiple clusters
-  (keeping internal latency low)
+- Keep managers in one region (multi-zone/datacenter/rack)
 
-- Groups of up to 9 nodes: all of them are managers
+- Groups of 3 or 5 nodes: all are managers. Beyond 5, seperate out managers and workers
 
-- Groups of 10 nodes and up: pick 5 "stable" nodes to be managers
-  <br/>
-  (Cloud pro-tip: use separate auto-scaling groups for managers and workers)
+- Groups of 10-100 nodes: pick 5 "stable" nodes to be managers
 
 - Groups of more than 100 nodes: watch your managers' CPU and RAM
 
-- Groups of more than 1000 nodes:
+  - 16GB memory or more, 4 CPU's or more, SSD's for Raft I/O
+  - otherwise, break down your nodes in multiple smaller clusters
 
-  - if you can afford to have fast, stable managers, add more of them
-  - otherwise, break down your nodes in multiple clusters
+.footnote[
 
+  Cloud pro-tip: use separate auto-scaling groups for managers and workers
+
+  See docker's "[Running Docker at scale](http://success.docker.com/article/running-docker-ee-at-scale)" document
+]
 ---
 
 ## What's the upper limit?
@@ -207,13 +187,13 @@ class: self-paced
 
   - one of the main take-aways was *"you're gonna need a bigger manager"*
 
-- Testing by the community: [4700 heterogenous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
+- Testing by the community: [4700 heterogeneous nodes all over the 'net](https://sematext.com/blog/2016/11/14/docker-swarm-lessons-from-swarm3k/)
 
-  - it just works
+  - it just works, assuming they have the resources
 
-  - more nodes require more CPU; more containers require more RAM
+  - more nodes require manager CPU and networking; more containers require RAM
 
-  - scheduling of large jobs (70000 containers) is slow, though (working on it!)
+  - scheduling of large jobs (70,000 containers) is slow, though ([getting better](https://github.com/moby/moby/pull/37372)!)
 
 ---
 
