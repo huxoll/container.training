@@ -1,10 +1,13 @@
 #!/bin/sh
 set -e
+
+TEMPLATE=""
+
 case "$1" in
 once)
   ./index.py
   for YAML in *.yml; do
-    ./markmaker.py $YAML > $YAML.html || { 
+    ./markmaker.py $YAML $TEMPLATE > $YAML.html || { 
       rm $YAML.html
       break
     }
