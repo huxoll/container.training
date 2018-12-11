@@ -85,7 +85,7 @@ def flatten(titles):
             yield title
 
 
-def generatefromyaml(manifest, filename):
+def generatefromyaml(manifest, filename, template):
     manifest = yaml.load(manifest)
 
     markdown, titles = processchapter(manifest["chapters"], filename)
@@ -110,7 +110,7 @@ def generatefromyaml(manifest, filename):
 
     markdown = markdown.replace("@@TITLE@@", manifest["title"].replace("\n", "<br/>"))
 
-    html = open("workshop.html").read()
+    html = open(template).read()
     html = html.replace("@@MARKDOWN@@", markdown)
     html = html.replace("@@EXCLUDE@@", exclude)
     html = html.replace("@@CHAT@@", manifest["chat"])
@@ -215,15 +215,22 @@ def makelink(filename):
     else:
         return filename
 
-if len(sys.argv) != 2:
-    logging.error("This program takes one and only one argument: the YAML file to process.")
-else:
+workshopTemplate = 'workshop.html'
+
+if len(sys.argv) != 3 and len(sys.argv) != 2 :
+    logging.error("This program takes two arguments: the YAML file to process, and an optional workshop template.")
+
+if len(sys.argv) == 3:
+    workshopTemplate = sys.argv[2]
+
+if len(sys.argv) == 2:
     filename = sys.argv[1]
-    if filename == "-":
-        filename = "<stdin>"
-        manifest = sys.stdin
-    else:
-        manifest = open(filename)
-    logging.info("Processing {}...".format(filename))
-    sys.stdout.write(generatefromyaml(manifest, filename))
-    logging.info("Processed {}.".format(filename))
+
+if filename == "-":
+    filename = "<stdin>"
+    manifest = sys.stdin
+else:
+    manifest = open(filename)
+logging.info("Processing {}...".format(filename))
+sys.stdout.write(generatefromyaml(manifest, filename, workshopTemplate))
+logging.info("Processed {}.".format(filename))
