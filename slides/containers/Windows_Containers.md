@@ -119,9 +119,9 @@ Nano and LinuxKit VMs in Hyper-V!)
 
   - golang, mongo, python, redis, hello-world ... and more being added
 
-  - you should still use `--plaform` with multi-os images to be certain 
+  - you should still use `--plaform` with multi-os images to be certain
 
-- Windows Containers now support `localhost` accessable containers (July 2018)
+- Windows Containers now support `localhost` accessible containers (July 2018)
 
 - Microsoft (April 2018) added Hyper-V support to Windows 10 Home ...
 
@@ -135,8 +135,8 @@ Most "official" Docker images don't run on Windows yet.
 
 Places to Look:
 
-  - Hub Official: https://hub.docker.com/u/winamd64/ 
-  
+  - Hub Official: https://hub.docker.com/u/winamd64/
+
   - Microsoft: https://hub.docker.com/r/microsoft/
 
 ---
@@ -153,12 +153,12 @@ Places to Look:
 
 - PowerShell [Tab Completion: DockerCompletion](https://github.com/matt9ucci/DockerCompletion)
 
-- Best Shell GUI: [Cmder.net](http://cmder.net/)
+- Best Shell GUI: [Cmder.net](https://cmder.net/)
 
 - Good Windows Container Blogs and How-To's
 
-  - Dockers DevRel [Elton Stoneman, Microsoft MVP](https://blog.sixeyed.com/)
+  - Docker DevRel [Elton Stoneman, Microsoft MVP](https://blog.sixeyed.com/)
 
-  - Docker Captian [Nicholas Dille](https://dille.name/blog/)
+  - Docker Captain [Nicholas Dille](https://dille.name/blog/)
 
   - Docker Captain [Stefan Scherer](https://stefanscherer.github.io/) 

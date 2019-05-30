@@ -19,7 +19,7 @@ class: title
 
   - install Docker on e.g. a cloud VM
 
-  - use http://www.play-with-docker.com/ to instantly get a training environment
+  - use https://www.play-with-docker.com/ to instantly get a training environment
 
 ---
 
@@ -45,13 +45,13 @@ individual Docker VM.*
 
 - The Docker Engine is a daemon (a service running in the background).
 
-- This daemon manages containers, the same way that an hypervisor manages VMs.
+- This daemon manages containers, the same way that a hypervisor manages VMs.
 
 - We interact with the Docker Engine by using the Docker CLI.
 
 - The Docker CLI and the Docker Engine communicate through an API.
 
-- There are many other programs, and many client libraries, to use that API.
+- There are many other programs and client libraries which use that API.
 
 ---
 
@@ -91,7 +91,7 @@ $ ssh <login>@<ip-address>
 
   * Git BASH (https://git-for-windows.github.io/)
 
-  * MobaXterm (http://moabaxterm.mobatek.net)
+  * MobaXterm (https://mobaxterm.mobatek.net/)
 
 ---
 

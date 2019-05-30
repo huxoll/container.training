@@ -150,21 +150,84 @@ Different deployments will use different underlying technologies.
 * Ad-hoc deployments can use a master-less discovery protocol
   like avahi to register and discover services.
 * It is also possible to do one-shot reconfiguration of the
-  ambassadors. It is slightly less dynamic but has much less
+  ambassadors. It is slightly less dynamic but has far fewer
   requirements.
 * Ambassadors can be used in addition to, or instead of, overlay networks.
 
 ---
 
-## Section summary
+## Service meshes
 
-We've learned how to:
+* A service mesh is a configurable network layer.
 
-* Understand the ambassador pattern and what it is used for (service portability).
+* It can provide service discovery, high availability, load balancing, observability...
 
-For more information about the ambassador pattern, including demos on Swarm and ECS: 
+* Service meshes are particularly useful for microservices applications.
 
-* AWS re:invent 2015 [DVO317](https://www.youtube.com/watch?v=7CZFpHUPqXw)
+* Service meshes are often implemented as proxies.
 
-* [SwarmWeek video about Swarm+Compose](https://youtube.com/watch?v=qbIvUvwa6As)
+* Applications connect to the service mesh, which relays the connection where needed.
 
+*Does that sound familiar?*
+
+---
+
+## Ambassadors and service meshes
+
+* When using a service mesh, a "sidecar container" is often used as a proxy
+
+* Our services connect (transparently) to that sidecar container
+
+* That sidecar container figures out where to forward the traffic
+
+... Does that sound familiar?
+
+(It should, because service meshes are essentially app-wide or cluster-wide ambassadors!)
+
+---
+
+## Some popular service meshes
+
+... And related projects:
+
+* [Consul Connect](https://www.consul.io/docs/connect/index.html)
+  <br/>
+  Transparently secures service-to-service connections with mTLS.
+
+* [Gloo](https://gloo.solo.io/)
+  <br/>
+  API gateway that can interconnect applications on VMs, containers, and serverless.
+
+* [Istio](https://istio.io/)
+  <br/>
+  A popular service mesh.
+
+* [Linkerd](https://linkerd.io/)
+  <br/>
+  Another popular service mesh.
+
+---
+
+## Learning more about service meshes
+
+A few blog posts about service meshes:
+
+* [Containers, microservices, and service meshes](http://jpetazzo.github.io/2019/05/17/containers-microservices-service-meshes/)
+  <br/>
+  Provides historical context: how did we do before service meshes were invented?
+
+* [Do I Need a Service Mesh?](https://www.nginx.com/blog/do-i-need-a-service-mesh/)
+  <br/>
+  Explains the purpose of service meshes. Illustrates some NGINX features.
+
+* [Do you need a service mesh?](https://www.oreilly.com/ideas/do-you-need-a-service-mesh)
+  <br/>
+  Includes high-level overview and definitions.
+
+* [What is Service Mesh and Why Do We Need It?](https://containerjournal.com/2018/12/12/what-is-service-mesh-and-why-do-we-need-it/)
+  <br/>
+  Includes a step-by-step demo of Linkerd.
+
+And a video:
+
+* [What is a Service Mesh, and Do I Need One When Developing Microservices?](https://www.datawire.io/envoyproxy/service-mesh/)

@@ -1,38 +1,79 @@
 # Namespaces
 
+- We would like to deploy another copy of DockerCoins on our cluster
+
+- We could rename all our deployments and services:
+
+  hasher → hasher2, redis → redis2, rng → rng2, etc.
+
+- That would require updating the code
+
+- There has to be a better way!
+
+--
+
+- As hinted by the title of this section, we will use *namespaces*
+
+---
+
+## Identifying a resource
+
 - We cannot have two resources with the same name
 
-  (Or can we...?)
+  (or can we...?)
 
 --
 
-- We cannot have two resources *of the same type* with the same name
+- We cannot have two resources *of the same kind* with the same name
 
-  (But it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set!)
-
---
-
-- We cannot have two resources of the same type with the same name *in the same namespace*
-
-  (But it's OK to have e.g. two `rng` services in different namespaces!)
+  (but it's OK to have a `rng` service, a `rng` deployment, and a `rng` daemon set)
 
 --
 
-- In other words: **the tuple *(type, name, namespace)* needs to be unique**
+- We cannot have two resources of the same kind with the same name *in the same namespace*
 
-  (In the resource YAML, the type is called `Kind`)
+  (but it's OK to have e.g. two `rng` services in different namespaces)
+
+--
+
+- Except for resources that exist at the *cluster scope*
+
+  (these do not belong to a namespace)
+
+---
+
+## Uniquely identifying a resource
+
+- For *namespaced* resources:
+
+  the tuple *(kind, name, namespace)* needs to be unique
+
+- For resources at the *cluster scope*:
+
+  the tuple *(kind, name)* needs to be unique
+
+.exercise[
+
+- List resource types again, and check the NAMESPACED column:
+  ```bash
+  kubectl api-resources
+  ```
+
+]
 
 ---
 
 ## Pre-existing namespaces
 
-- If we deploy a cluster with `kubeadm`, we have three namespaces:
+- If we deploy a cluster with `kubeadm`, we have three or four namespaces:
 
   - `default` (for our applications)
 
   - `kube-system` (for the control plane)
 
-  - `kube-public` (contains one secret used for cluster discovery)
+  - `kube-public` (contains one ConfigMap for cluster discovery)
+
+  - `kube-node-lease` (in Kubernetes 1.14 and later; contains Lease objects)
 
 - If we deploy differently, we may have different namespaces
 
@@ -40,12 +81,16 @@
 
 ## Creating namespaces
 
-- Creating a namespace is done with the `kubectl create namespace` command:
+- Let's see two identical methods to create a namespace
+
+.exercise[
+
+- We can use `kubectl create namespace`:
   ```bash
   kubectl create namespace blue
   ```
 
-- We can also get fancy and use a very minimal YAML snippet, e.g.:
+- Or we can construct a very minimal YAML snippet:
   ```bash
 	kubectl apply -f- <<EOF
 	apiVersion: v1
@@ -55,9 +100,9 @@
 	EOF
   ```
 
-- The two methods above are identical
+]
 
-- If we are using a tool like Helm, it will create namespaces automatically
+- Some tools like Helm will create namespaces automatically when needed
 
 ---
 
@@ -68,7 +113,7 @@
   kubectl -n blue get svc
   ```
 
-- We can also use *contexts*
+- We can also change our current *context*
 
 - A context is a *(user, cluster, namespace)* tuple
 
@@ -76,9 +121,9 @@
 
 ---
 
-## Creating a context
+## Viewing existing contexts
 
-- We are going to create a context for the `blue` namespace
+- On our training environments, at this point, there should be only one context
 
 .exercise[
 
@@ -87,46 +132,113 @@
   kubectl config get-contexts
   ```
 
-- Create a new context:
-  ```bash
-  kubectl config set-context blue --namespace=blue \
-      --cluster=kubernetes --user=kubernetes-admin
-  ```
-
 ]
 
-We have created a context; but this is just some configuration values.
+- The current context (the only one!) is tagged with a `*`
 
-The namespace doesn't exist yet.
+- What are NAME, CLUSTER, AUTHINFO, and NAMESPACE?
 
 ---
 
-## Using a context
+## What's in a context
 
-- Let's switch to our new context and deploy the DockerCoins chart
+- NAME is an arbitrary string to identify the context
+
+- CLUSTER is a reference to a cluster
+
+  (i.e. API endpoint URL, and optional certificate)
+
+- AUTHINFO is a reference to the authentication information to use
+
+  (i.e. a TLS client certificate, token, or otherwise)
+
+- NAMESPACE is the namespace
+
+  (empty string = `default`)
+
+---
+
+## Switching contexts
+
+- We want to use a different namespace
+
+- Solution 1: update the current context
+
+  *This is appropriate if we need to change just one thing (e.g. namespace or authentication).*
+
+- Solution 2: create a new context and switch to it
+
+  *This is appropriate if we need to change multiple things and switch back and forth.*
+
+- Let's go with solution 1!
+
+---
+
+## Updating a context
+
+- This is done through `kubectl config set-context`
+
+- We can update a context by passing its name, or the current context with `--current`
 
 .exercise[
 
-- Use the `blue` context:
+- Update the current context to use the `blue` namespace:
   ```bash
-  kubectl config use-context blue
+  kubectl config set-context --current --namespace=blue
   ```
 
-- Deploy DockerCoins:
+- Check the result:
   ```bash
-  helm install dockercoins
+  kubectl config get-contexts
   ```
 
 ]
 
-In the last command line, `dockercoins` is just the local path where
-we created our Helm chart before.
+---
+
+## Using our new namespace
+
+- Let's check that we are in our new namespace, then deploy a new copy of Dockercoins
+
+.exercise[
+
+- Verify that the new context is empty:
+  ```bash
+  kubectl get all
+  ```
+
+]
+
+---
+
+## Deploying DockerCoins with YAML files
+
+- The GitHub repository `jpetazzo/kubercoins` contains everything we need!
+
+.exercise[
+
+- Clone the kubercoins repository:
+  ```bash
+  cd ~
+  git clone https://github.com/jpetazzo/kubercoins
+  ```
+
+- Create all the DockerCoins resources:
+  ```bash
+  kubectl create -f kubercoins
+  ```
+
+]
+
+If the argument behind `-f` is a directory, all the files in that directory are processed. 
+
+The subdirectories are *not* processed, unless we also add the `-R` flag.
 
 ---
 
 ## Viewing the deployed app
 
-- Let's see if our Helm chart worked correctly!
+- Let's see if this worked correctly!
 
 .exercise[
 
@@ -139,7 +251,7 @@ we created our Helm chart before.
 
 ]
 
-Note: it might take a minute or two for the app to be up and running.
+If the graph shows up but stays at zero, give it a minute or two!
 
 ---
 
@@ -181,29 +293,18 @@ Note: it might take a minute or two for the app to be up and running.
 
 .exercise[
 
-- View the names of the contexts:
-  ```bash
-  kubectl config get-contexts
-  ```
-
 - Switch back to the original context:
   ```bash
-  kubectl config use-context kubernetes-admin@kubernetes
+  kubectl config set-context --current --namespace=
   ```
 
 ]
 
+Note: we could have used `--namespace=default` for the same result.
+
 ---
 
 ## Switching namespaces more easily
-
-- Defining a new context for each namespace can be cumbersome
-
-- We can also alter the current context with this one-liner:
-
-  ```bash
-  kubectl config set-context --current --namespace=foo
-  ```
 
 - We can also use a little helper tool called `kubens`:
 

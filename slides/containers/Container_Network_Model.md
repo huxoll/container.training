@@ -528,7 +528,9 @@ Very short instructions:
 - `docker network create mynet --driver overlay`
 - `docker service create --network mynet myimage`
 
-See http://jpetazzo.github.io/container.training for all the deets about clustering!
+If you want to learn more about Swarm mode, you can check
+[this video](https://www.youtube.com/watch?v=EuzoEaE6Cqs)
+or [these slides](https://container.training/swarm-selfpaced.yml.html).
 
 ---
 
@@ -721,3 +723,20 @@ eth0      Link encap:Ethernet  HWaddr 02:42:AC:15:00:03
 ...
 ```
 ]
+
+---
+
+class: extra-details
+
+## Building with a custom network
+
+* We can build a Dockerfile with a custom network with `docker build --network NAME`.
+
+* This can be used to check that a build doesn't access the network.
+
+  (But keep in mind that most Dockerfiles will fail,
+  <br/>because they need to install remote packages and dependencies!)
+
+* This may be used to access an internal package repository.
+
+  (But try to use a multi-stage build instead, if possible!)

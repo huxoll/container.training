@@ -66,25 +66,26 @@ class: pic
 
 ---
 
-class: pic
-
-## Multiple containers sharing the same image
-
-![layers](images/sharing-layers.jpg)
-
----
-
 ## Differences between containers and images
 
 * An image is a read-only filesystem.
 
-* A container is an encapsulated set of processes running in a
-  read-write copy of that filesystem.
+* A container is an encapsulated set of processes,
+
+  running in a read-write copy of that filesystem.
 
 * To optimize container boot time, *copy-on-write* is used
   instead of regular copy.
 
 * `docker run` starts a container from a given image.
+
+---
+
+class: pic
+
+## Multiple containers sharing the same image
+
+![layers](images/sharing-layers.jpg)
 
 ---
 
@@ -118,7 +119,7 @@ If an image is read-only, how do we change it?
 
 * The only way to create an image is by "freezing" a container.
 
-* The only way to create a container is by instanciating an image.
+* The only way to create a container is by instantiating an image.
 
 * Help!
 
@@ -177,8 +178,11 @@ Let's explain each of them.
 
 ## Root namespace
 
-The root namespace is for official images. They are put there by Docker Inc.,
-but they are generally authored and maintained by third parties.
+The root namespace is for official images.
+
+They are gated by Docker Inc.
+
+They are generally authored and maintained by third parties.
 
 Those images include:
 
@@ -188,7 +192,7 @@ Those images include:
 
 * Ready-to-use components and services, like redis, postgresql...
 
-* Over 130 at this point!
+* Over 150 at this point!
 
 ---
 
@@ -216,7 +220,7 @@ clock
 
 ---
 
-## Self-Hosted namespace
+## Self-hosted namespace
 
 This namespace holds images which are not hosted on Docker Hub, but on third
 party registries.
@@ -232,6 +236,13 @@ localhost:5000/wordpress
 
 * `localhost:5000` is the host and port of the registry
 * `wordpress` is the name of the image
+
+Other examples:
+
+```bash
+quay.io/coreos/etcd
+gcr.io/google-containers/hugo
+```
 
 ---
 
@@ -351,6 +362,8 @@ Do specify tags:
 * When going to production.
 * To ensure that the same version will be used everywhere.
 * To ensure repeatability later.
+
+This is similar to what we would do with `pip install`, `npm install`, etc.
 
 ---
 

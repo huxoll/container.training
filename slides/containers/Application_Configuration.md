@@ -36,7 +36,7 @@ docker run jpetazzo/hamba 80 www1:80 www2:80
 
 * Appropriate for mandatory parameters (without which the service cannot start).
 
-* Convenient for "toolbelt" services instanciated many times.
+* Convenient for "toolbelt" services instantiated many times.
 
   (Because there is no extra step: just run it!)
 
@@ -63,7 +63,7 @@ docker run -e ELASTICSEARCH_URL=http://es42:9201/ kibana
 
 * Appropriate for optional parameters (since the image can provide default values).
 
-* Also convenient for services instanciated many times.
+* Also convenient for services instantiated many times.
 
   (It's as easy as command-line parameters.)
 
@@ -98,13 +98,13 @@ COPY prometheus.conf /etc
 
 * Allows arbitrary customization and complex configuration files.
 
-* Requires to write a configuration file. (Obviously!)
+* Requires writing a configuration file. (Obviously!)
 
-* Requires to build an image to start the service.
+* Requires building an image to start the service.
 
-* Requires to rebuild the image to reconfigure the service.
+* Requires rebuilding the image to reconfigure the service.
 
-* Requires to rebuild the image to upgrade the service.
+* Requires rebuilding the image to upgrade the service.
 
 * Configured images can be stored in registries.
 
@@ -132,11 +132,11 @@ docker run -v appconfig:/etc/appconfig myapp
 
 * Allows arbitrary customization and complex configuration files.
 
-* Requires to create a volume for each different configuration.
+* Requires creating a volume for each different configuration.
 
 * Services with identical configurations can use the same volume.
 
-* Doesn't require to build / rebuild an image when upgrading / reconfiguring.
+* Doesn't require building / rebuilding an image when upgrading / reconfiguring.
 
 * Configuration can be generated or edited through another container.
 

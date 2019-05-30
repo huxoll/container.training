@@ -144,6 +144,10 @@ At a first glance, it looks like this would be particularly useful in scripts.
 However, if we want to start a container and get its ID in a reliable way,
 it is better to use `docker run -d`, which we will cover in a bit.
 
+(Using `docker ps -lq` is prone to race conditions: what happens if someone
+else, or another program or script, starts another container just before
+we run `docker ps -lq`?)
+
 ---
 
 ## View the logs of a container
@@ -253,7 +257,7 @@ $ docker kill 068 57ad
 The `stop` and `kill` commands can take multiple container IDs.
 
 Those containers will be terminated immediately (without
-the 10 seconds delay).
+the 10-second delay).
 
 Let's check that our containers don't show up anymore:
 

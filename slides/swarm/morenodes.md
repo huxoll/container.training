@@ -160,7 +160,7 @@ class: self-paced
 
 - Keep managers in one region (multi-zone/datacenter/rack)
 
-- Groups of 3 or 5 nodes: all are managers. Beyond 5, seperate out managers and workers
+- Groups of 3 or 5 nodes: all are managers. Beyond 5, separate out managers and workers
 
 - Groups of 10-100 nodes: pick 5 "stable" nodes to be managers
 
@@ -173,7 +173,7 @@ class: self-paced
 
   Cloud pro-tip: use separate auto-scaling groups for managers and workers
 
-  See docker's "[Running Docker at scale](http://success.docker.com/article/running-docker-ee-at-scale)" document
+  See docker's "[Running Docker at scale](https://success.docker.com/article/running-docker-ee-at-scale)" document
 ]
 ---
 

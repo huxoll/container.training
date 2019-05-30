@@ -33,13 +33,13 @@ Docker volumes can be used to achieve many things, including:
 
 * Sharing a *single file* between the host and a container.
 
-* Using remote storage and custom storage with "volume drivers".
+* Using remote storage and custom storage with *volume drivers*.
 
 ---
 
 ## Volumes are special directories in a container
 
-Volumes can be declared in two different ways.
+Volumes can be declared in two different ways:
 
 * Within a `Dockerfile`, with a `VOLUME` instruction.
 
@@ -163,7 +163,7 @@ Volumes are not anchored to a specific path.
 
 * Volumes are used with the `-v` option.
 
-* When a host path does not contain a /, it is considered to be a volume name.
+* When a host path does not contain a `/`, it is considered a volume name.
 
 Let's start a web server using the two previous volumes.
 
@@ -189,7 +189,7 @@ $ curl localhost:1234
 
 * In this example, we will run a text editor in the other container.
 
-  (But this could be a FTP server, a WebDAV server, a Git receiver...)
+  (But this could be an FTP server, a WebDAV server, a Git receiver...)
 
 Let's start another container using the `webapps` volume.
 
@@ -401,7 +401,7 @@ or providing extra features. For instance:
 * [REX-Ray](https://rexray.io/) - create and manage volumes backed by an enterprise storage system (e.g.
   SAN or NAS), or by cloud block stores (e.g. EBS, EFS).
 
-* [Portworx](http://portworx.com/) - provides distributed block store for containers.
+* [Portworx](https://portworx.com/) - provides distributed block store for containers.
 
 * [Gluster](https://www.gluster.org/) - open source software-defined distributed storage that can scale
   to several petabytes. It provides interfaces for object, block and file storage.

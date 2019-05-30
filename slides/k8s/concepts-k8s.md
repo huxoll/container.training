@@ -130,6 +130,14 @@ class: pic
 
 ---
 
+class: pic
+
+![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
+
+---
+
+class: extra-details
+
 ## Running the control plane on special nodes
 
 - It is common to reserve a dedicated node for the control plane
@@ -152,6 +160,8 @@ class: pic
 
 ---
 
+class: extra-details
+
 ## Running the control plane outside containers
 
 - The services of the control plane can run in or out of containers
@@ -171,6 +181,8 @@ class: pic
 
 ---
 
+class: extra-details
+
 ## Do we need to run Docker at all?
 
 No!
@@ -186,6 +198,8 @@ No!
   (like CRI-O, or containerd)
 
 ---
+
+class: extra-details
 
 ## Do we need to run Docker at all?
 
@@ -209,6 +223,8 @@ Yes!
 
 ---
 
+class: extra-details
+
 ## Do we need to run Docker at all?
 
 - On our development environments, CI pipelines ... :
@@ -225,25 +241,21 @@ Yes!
 
 ---
 
-## Kubernetes resources
+## Interacting with Kubernetes
 
-- The Kubernetes API defines a lot of objects called *resources*
+- We will interact with our Kubernetes cluster through the Kubernetes API
 
-- These resources are organized by type, or `Kind` (in the API)
+- The Kubernetes API is (mostly) RESTful
+
+- It allows us to create, read, update, delete *resources*
 
 - A few common resource types are:
 
   - node (a machine — physical or virtual — in our cluster)
+
   - pod (group of containers running together on a node)
+
   - service (stable network endpoint to connect to one or multiple containers)
-  - namespace (more-or-less isolated group of things)
-  - secret (bundle of sensitive data to be passed to a container)
- 
-  And much more!
-
-- We can see the full list by running `kubectl api-resources`
-
-  (In Kubernetes 1.10 and prior, the command to list API resources was `kubectl get`)
 
 ---
 
@@ -253,22 +265,16 @@ class: pic
 
 ---
 
-class: pic
-
-![One of the best Kubernetes architecture diagrams available](images/k8s-arch4-thanks-luxas.png)
-
----
-
 ## Credits
 
-- The first diagram is courtesy of Weave Works
+- The first diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
+
+  - it's one of the best Kubernetes architecture diagrams available!
+
+- The second diagram is courtesy of Weave Works
 
   - a *pod* can have multiple containers working together
 
   - IP addresses are associated with *pods*, not with individual containers
-
-- The second diagram is courtesy of Lucas Käldström, in [this presentation](https://speakerdeck.com/luxas/kubeadm-cluster-creation-internals-from-self-hosting-to-upgradability-and-ha)
-
-  - it's one of the best Kubernetes architecture diagrams available!
 
 Both diagrams used with permission.

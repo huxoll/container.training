@@ -64,7 +64,7 @@
 
   (`401 Unauthorized` HTTP code)
 
-- If a request is neither accepted nor accepted by anyone, it's anonymous
+- If a request is neither rejected nor accepted by anyone, it's anonymous
 
   - the user name is `system:anonymous`
 
@@ -108,7 +108,7 @@ class: extra-details
           --raw \
           -o json \
           | jq -r .users[0].user[\"client-certificate-data\"] \
-          | base64 -d \
+          | openssl base64 -d -A \
           | openssl x509 -text \
           | grep Subject:
   ```
@@ -127,11 +127,13 @@ class: extra-details
 - `--raw` includes certificate information (which shows as REDACTED otherwise)
 - `-o json` outputs the information in JSON format
 - `| jq ...` extracts the field with the user certificate (in base64)
-- `| base64 -d` decodes the base64 format (now we have a PEM file)
+- `| openssl base64 -d -A` decodes the base64 format (now we have a PEM file)
 - `| openssl x509 -text` parses the certificate and outputs it as plain text
 - `| grep Subject:` shows us the line that interests us
 
 → We are user `kubernetes-admin`, in group `system:masters`.
+
+(We will see later how and why this gives us the permissions that we have.)
 
 ---
 
@@ -141,19 +143,21 @@ class: extra-details
 
   (see issue [#18982](https://github.com/kubernetes/kubernetes/issues/18982))
 
-- As a result, we cannot easily suspend a user's access
+- As a result, we don't have an easy way to terminate someone's access
 
-- There are workarounds, but they are very inconvenient:
+  (if their key is compromised, or they leave the organization)
 
-  - issue short-lived certificates (e.g. 24 hours) and regenerate them often
+- Option 1: re-create a new CA and re-issue everyone's certificates 
+  <br/>
+  → Maybe OK if we only have a few users; no way otherwise
 
-  - re-create the CA and re-issue all certificates in case of compromise
+- Option 2: don't use groups; grant permissions to individual users
+  <br/>
+  → Inconvenient if we have many users and teams; error-prone
 
-  - grant permissions to individual users, not groups
-    <br/>
-    (and remove all permissions to a compromised user)
-
-- Until this is fixed, we probably want to use other methods
+- Option 3: issue short-lived certificates (e.g. 24 hours) and renew them often
+  <br/>
+  → This can be facilitated by e.g. Vault or by the Kubernetes CSR API
 
 ---
 
@@ -258,7 +262,7 @@ class: extra-details
 - Extract the token and decode it:
   ```bash
   TOKEN=$(kubectl get secret $SECRET -o json \
-          | jq -r .data.token | base64 -d)
+          | jq -r .data.token | openssl base64 -d -A)
   ```
 
 ]
@@ -405,7 +409,7 @@ class: extra-details
 
 - We are going to create a service account
 
-- We will use an existing cluster role (`view`)
+- We will use a default cluster role (`view`)
 
 - We will bind together this role and this service account
 
@@ -538,7 +542,7 @@ It's important to note a couple of details in these flags ...
 
 - But that we can't create things:
   ```
-  ./kubectl create deployment --image=nginx
+  ./kubectl create deployment testrbac --image=nginx
   ```
 
 - Exit the container with `exit` or `^D`
@@ -566,4 +570,114 @@ It's important to note a couple of details in these flags ...
           --as some-user
   kubectl auth can-i list nodes \
           --as system:serviceaccount:<namespace>:<name-of-service-account>
+  ```
+
+---
+
+class: extra-details
+
+## Where does this `view` role come from?
+
+- Kubernetes defines a number of ClusterRoles intended to be bound to users
+
+- `cluster-admin` can do *everything* (think `root` on UNIX)
+
+- `admin` can do *almost everything* (except e.g. changing resource quotas and limits)
+
+- `edit` is similar to `admin`, but cannot view or edit permissions
+
+- `view` has read-only access to most resources, except permissions and secrets
+
+*In many situations, these roles will be all you need.*
+
+*You can also customize them if needed!*
+
+---
+
+class: extra-details
+
+## Customizing the default roles
+
+- If you need to *add* permissions to these default roles (or others),
+  <br/>
+  you can do it through the [ClusterRole Aggregation](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles) mechanism
+
+- This happens by creating a ClusterRole with the following labels:
+  ```yaml
+    metadata:
+      labels:
+        rbac.authorization.k8s.io/aggregate-to-admin: "true"
+        rbac.authorization.k8s.io/aggregate-to-edit: "true"
+        rbac.authorization.k8s.io/aggregate-to-view: "true"
+  ```
+
+- This ClusterRole permissions will be added to `admin`/`edit`/`view` respectively
+
+- This is particulary useful when using CustomResourceDefinitions
+
+  (since Kubernetes cannot guess which resources are sensitive and which ones aren't)
+
+---
+
+class: extra-details
+
+## Where do our permissions come from?
+
+- When interacting with the Kubernetes API, we are using a client certificate
+
+- We saw previously that this client certificate contained:
+
+  `CN=kubernetes-admin` and `O=system:masters`
+
+- Let's look for these in existing ClusterRoleBindings:
+  ```bash
+  kubectl get clusterrolebindings -o yaml | 
+    grep -e kubernetes-admin -e system:masters
+  ```
+
+  (`system:masters` should show up, but not `kubernetes-admin`.)
+
+- Where does this match come from?
+
+---
+
+class: extra-details
+
+## The `system:masters` group
+
+- If we eyeball the output of `kubectl get clusterrolebindings -o yaml`, we'll find out!
+
+- It is in the `cluster-admin` binding:
+  ```bash
+  kubectl describe clusterrolebinding cluster-admin
+  ```
+
+- This binding associates `system:masters` to the cluster role `cluster-admin`
+
+- And the `cluster-admin` is, basically, `root`:
+  ```bash
+  kubectl describe clusterrole cluster-admin
+  ```
+
+---
+
+class: extra-details
+
+## Figuring out who can do what
+
+- For auditing purposes, sometimes we want to know who can perform an action
+
+- Here is a proof-of-concept tool by Aqua Security, doing exactly that:
+
+  https://github.com/aquasecurity/kubectl-who-can
+
+- This is one way to install it:
+  ```bash
+  docker run --rm -v /usr/local/bin:/go/bin golang \
+         go get -v github.com/aquasecurity/kubectl-who-can
+  ```
+
+- This is one way to use it:
+  ```bash
+  kubectl-who-can create pods
   ```

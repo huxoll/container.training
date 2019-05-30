@@ -38,11 +38,7 @@ We can arbitrarily distinguish:
 
 ## Installing Docker on Linux
 
-* The recommended method is to install the packages supplied by Docker Inc.:
-
-  https://store.docker.com
-
-* The general method is:
+* The recommended method is to install the packages supplied by Docker Inc :
 
   - add Docker Inc.'s package repositories to your system configuration
 
@@ -55,6 +51,12 @@ We can arbitrarily distinguish:
 * You can also install from binaries (if your distro is not supported):
 
   https://docs.docker.com/engine/installation/linux/docker-ce/binaries/
+
+* To quickly setup a dev environment, Docker provides a convenience install script:
+
+  ```bash
+  curl -fsSL get.docker.com | sh
+  ```
 
 ---
 
@@ -82,11 +84,11 @@ class: extra-details
 
 ## Installing Docker on macOS and Windows
 
-* On macOS, the recommended method is to use Docker for Mac:
+* On macOS, the recommended method is to use Docker Desktop for Mac:
 
   https://docs.docker.com/docker-for-mac/install/
 
-* On Windows 10 Pro, Enterprise, and Education, you can use Docker for Windows:
+* On Windows 10 Pro, Enterprise, and Education, you can use Docker Desktop for Windows:
 
   https://docs.docker.com/docker-for-windows/install/
 
@@ -100,7 +102,7 @@ class: extra-details
 
 ---
 
-## Docker for Mac and Docker for Windows
+## Docker Desktop for Mac and Docker Desktop for Windows
 
 * Special Docker Editions that integrate well with their respective host OS
 
