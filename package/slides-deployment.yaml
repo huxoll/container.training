@@ -1,0 +1,37 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: container-training-slides-fe-service
+spec:
+  selector:
+    app: container-training-slides-fe
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+  
+---  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-training-slides-fe-deployment
+  labels:
+    app: container-training-slides-fe
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: container-training-slides-fe
+  template:
+    metadata:
+      labels:
+        app: container-training-slides-fe
+    spec:
+      containers:
+      - name: container-training-slides-fe
+        image: tompscanlan/container-training-slides-fe:latest
+        ports:
+        - containerPort: 80

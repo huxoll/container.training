@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-TEMPLATE=""
+TEMPLATE="${TEMPLATE:-}"
 
 case "$1" in
 once)

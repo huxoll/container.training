@@ -211,12 +211,14 @@ def makelink(filename):
         return filename
 
 workshopTemplate = 'workshop.html'
+filename =  None
 
 if len(sys.argv) != 3 and len(sys.argv) != 2 :
     logging.error("This program takes two arguments: the YAML file to process, and an optional workshop template.")
 
 if len(sys.argv) == 3:
     workshopTemplate = sys.argv[2]
+    filename = sys.argv[1]
 
 if len(sys.argv) == 2:
     filename = sys.argv[1]
