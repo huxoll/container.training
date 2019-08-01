@@ -1,6 +1,6 @@
 # Accessing logs from the CLI
 
-- The `kubectl logs` commands has limitations:
+- The `kubectl logs` command has limitations:
 
   - it cannot stream logs from multiple pods at a time
 
@@ -12,7 +12,7 @@
 
 ## Doing it manually
 
-- We *could* (if we were so inclined), write a program or script that would:
+- We *could* (if we were so inclined) write a program or script that would:
 
   - take a selector as an argument
 
@@ -62,7 +62,7 @@ Exactly what we need!
 - The following commands will install Stern on a Linux Intel 64 bit machine:
   ```bash
   sudo curl -L -o /usr/local/bin/stern \
-       https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64
+       https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
   sudo chmod +x /usr/local/bin/stern
   ```
 
@@ -72,11 +72,11 @@ Exactly what we need!
 
 ## Using Stern
 
-- There are two ways to specify the pods for which we want to see the logs:
+- There are two ways to specify the pods whose logs we want to see:
 
   - `-l` followed by a selector expression (like with many `kubectl` commands)
 
-  - with a "pod query", i.e. a regex used to match pod names
+  - with a "pod query," i.e. a regex used to match pod names
 
 - These two ways can be combined if necessary
 

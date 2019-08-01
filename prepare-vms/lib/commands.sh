@@ -229,7 +229,7 @@ EOF"
     pssh "
     if [ ! -x /usr/local/bin/stern ]; then
         ##VERSION##
-        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.10.0/stern_linux_amd64 &&
+        sudo curl -L -o /usr/local/bin/stern https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64 &&
         sudo chmod +x /usr/local/bin/stern &&
         stern --completion bash | sudo tee /etc/bash_completion.d/stern
     fi"
@@ -316,6 +316,14 @@ _cmd_listall() {
             ;;
         esac
     done
+}
+
+_cmd ping "Ping VMs in a given tag, to check that they have network access"
+_cmd_ping() {
+    TAG=$1
+    need_tag
+
+    fping < tags/$TAG/ips.txt
 }
 
 _cmd netfix "Disable GRO and run a pinger job on the VMs"
@@ -526,6 +534,38 @@ _cmd_weavetest() {
     kubectl -n kube-system get pods -o name | grep weave | cut -d/ -f2 |
     xargs -I POD kubectl -n kube-system exec POD -c weave -- \
     sh -c \"./weave --local status | grep Connections | grep -q ' 1 failed' || ! echo POD \""
+}
+
+_cmd webssh "Install a WEB SSH server on the machines (port 1080)"
+_cmd_webssh() {
+    TAG=$1
+    need_tag
+    pssh "
+    sudo apt-get update &&
+    sudo apt-get install python-tornado python-paramiko -y"
+    pssh "
+    [ -d webssh ] || git clone https://github.com/jpetazzo/webssh"
+    pssh "
+    for KEYFILE in /etc/ssh/*.pub; do
+      read a b c < \$KEYFILE; echo localhost \$a \$b
+    done > webssh/known_hosts"
+    pssh "cat >webssh.service <<EOF
+[Unit]
+Description=webssh
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/webssh
+ExecStart=/usr/bin/env python run.py --fbidhttp=false --port=1080 --policy=reject
+User=nobody
+Group=nogroup
+Restart=always
+EOF"
+    pssh "
+    sudo systemctl enable \$PWD/webssh.service &&
+    sudo systemctl start webssh.service"
 }
 
 greet() {
