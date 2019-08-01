@@ -1,16 +1,17 @@
 version: "2"
 
 services:
-  www:
-    image: nginx
-    volumes:
-    - .:/usr/share/nginx/html
-    ports:
-    - 80
-  builder:
-    build: .
-    volumes:
-    - ..:/repo
-    working_dir: /repo/slides
-    command: ./build.sh forever
-
+ www:
+   image: nginx
+   volumes:
+   - .:/usr/share/nginx/html
+   ports:
+   - 8080:80
+ builder:
+   build: .
+   volumes:
+   - ..:/repo
+   working_dir: /repo/slides
+   command: ./build.sh forever
+   environment:
+     TEMPLATE: "workshop-vmware.html"
