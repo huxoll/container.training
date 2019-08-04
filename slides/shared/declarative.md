@@ -1,4 +1,4 @@
-# Declarative vs imperative
+# Declarative vs Imperative
 
 - Our container orchestrator puts a very strong emphasis on being *declarative*
 

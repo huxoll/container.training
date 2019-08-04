@@ -84,6 +84,7 @@ Now that our cluster has been created, we'll need to get a couple of things:
   ```bash
   pks cluster <cluster-name>
   pks get-credentials <cluster-name>
+  kubectl config use-context <cluster-name>
   ```
   - Be sure to make note of the Master IP address.
   - The credentials will be stored in the ```.kube``` folder of your client.

@@ -545,12 +545,12 @@
 
 
 
-- title: Introduction to Docker and Containers
+- title: Introduction to Docker and Containers (VMware)
   slides: intro-selfpaced.yml.html
 
-- title: Container Orchestration with Docker and Swarm
-  slides: swarm-selfpaced.yml.html
+- title: Container Orchestration with Kubernetes, PKS & NSX-T
+  slides: pks-selfpaced.yml.html
 
-- title: Deploying and Scaling Microservices with Docker and Kubernetes
+- title: Deploying and Scaling Microservices with Docker and Kubernetes (PKS)
   slides: kube-selfpaced.yml.html
 

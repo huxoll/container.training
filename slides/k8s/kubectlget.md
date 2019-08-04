@@ -172,8 +172,8 @@ class: extra-details
 
 - Look at the information available for `node1` with one of the following commands:
   ```bash
-  kubectl describe node/node1
-  kubectl describe node node1
+  kubectl describe node/<node-id>
+  kubectl describe node <node-id>
   ```
 
 ]
@@ -311,15 +311,12 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 - `kube-controller-manager` and `kube-scheduler` are other control plane components
 
-- `coredns` provides DNS-based service discovery ([replacing kube-dns as of 1.11](https://kubernetes.io/blog/2018/07/10/coredns-ga-for-kubernetes-cluster-dns/))
+- `kube-dns` provides DNS-based service discovery.
 
 - `kube-proxy` is the (per-node) component managing port mappings and such
 
-- `weave` is the (per-node) component managing the network overlay
-
 - the `READY` column indicates the number of containers in each pod
 
-  (1 for most pods, but `weave` has 2, for instance)
 
 ---
 

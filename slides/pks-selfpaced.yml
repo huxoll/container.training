@@ -1,0 +1,71 @@
+title: |
+  Container Orchestration with
+  Kubernetes, PKS & NSX-T
+
+chat: "[Slack](https://dockercommunity.slack.com/messages/C7GKACWDV)"
+
+gitrepo: github.com/dahr/container.training
+
+slides: http://container.training/
+
+exclude:
+- in-person
+- btp-auto
+
+chapters:
+- shared/title.md
+#- shared/logistics.md
+- pks/intro.md
+- pks/about-slides.md
+- shared/toc.md
+- - pks/prereqs.md
+  - |
+    name: part-1
+
+    class: title, self-paced
+
+    Part 1
+  - pks/sampleapp.md
+  - shared/composescale.md
+  - shared/hastyconclusions.md
+  - shared/composedown.md
+  - pks/swarmkit.md
+  - shared/declarative.md
+  - pks/swarmmode.md
+  - pks/creatingswarm.md
+  #- pks/machine.md
+  - pks/morenodes.md
+- - pks/firstservice.md
+  - pks/ourapponswarm.md
+  - pks/hostingregistry.md
+  - pks/testingregistry.md
+  - pks/btp-manual.md
+  - pks/swarmready.md
+  - pks/stacks.md
+  - pks/cicd.md
+  - |
+    name: part-2
+
+    class: title, self-paced
+
+    Part 2
+- - pks/operatingswarm.md
+  - pks/netshoot.md
+  - pks/swarmnbt.md
+  - pks/ipsec.md
+  - pks/updatingservices.md
+  - pks/rollingupdates.md
+  - pks/healthchecks.md
+  - pks/nodeinfo.md
+  - pks/swarmtools.md
+- - pks/security.md
+  - pks/secrets.md
+  - pks/encryptionatrest.md
+  - pks/leastprivilege.md
+  - pks/apiscope.md
+  - pks/logging.md
+  - pks/metrics.md
+  - pks/stateful.md
+  - pks/extratips.md
+  - shared/thankyou.md
+  - pks/links.md

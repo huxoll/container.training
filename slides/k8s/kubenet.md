@@ -142,7 +142,7 @@ class: extra-details
 
 - It is possible to use multiple pod networks in parallel
 
-  (with "meta-plugins" like CNI-Genie or Multus)
+  (with "meta-plugins" like NSX-T)
 
 - Some solutions can fill multiple roles
 
