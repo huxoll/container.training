@@ -1,6 +1,6 @@
 # Our sample application
 
-- We will clone the GitHub repository onto our `node1`
+- We will clone the GitHub repository onto our Docker host
 
 - The repository also contains scripts and tools that we will use through the workshop
 
@@ -15,7 +15,7 @@ fi
 ```
 -->
 
-- Clone the repository on `node1`:
+- Clone the repository on Docker host:
   ```bash
   git clone https://@@GITREPO@@
   ```
@@ -248,9 +248,7 @@ class: extra-details
 
 .exercise[
 
-- With a web browser, connect to `node1` on port 8000
-
-- Remember: the `nodeX` aliases are valid only on the nodes themselves
+- With a web browser, connect to the Docker host on port 8000
 
 - In your browser, you need to enter the IP address of your node
 

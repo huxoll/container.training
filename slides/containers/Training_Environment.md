@@ -9,33 +9,22 @@ class: title
 
 ## Our training environment
 
-- If you are attending a tutorial or workshop:
+- Either using your laptop or a VM, you'll need to install the following:
 
-  - a VM has been provisioned for each student
-
-- If you are doing or re-doing this course on your own, you can:
-
-  - install Docker locally (as explained in the chapter "Installing Docker")
-
-  - install Docker on e.g. a cloud VM
-
-  - use https://www.play-with-docker.com/ to instantly get a training environment
+  - Docker Engine
+  - Docker Compose
+  - Git
 
 ---
 
-## Our Docker VM
+## The Docker VM
 
-*This section assumes that you are following this course as part of
-a tutorial, training or workshop, where each student is given an
-individual Docker VM.*
 
 - The VM is created just before the training.
 
 - It will stay up during the whole training.
 
 - It will be destroyed shortly after the training.
-
-- It comes pre-loaded with Docker and some other useful tools.
 
 ---
 
@@ -52,26 +41,6 @@ individual Docker VM.*
 - The Docker CLI and the Docker Engine communicate through an API.
 
 - There are many other programs and client libraries which use that API.
-
----
-
-## Why don't we run Docker locally?
-
-- We are going to download container images and distribution packages.
-
-- This could put a bit of stress on the local WiFi and slow us down.
-
-- Instead, we use a remote VM that has a good connectivity
-
-- In some rare cases, installing Docker locally is challenging:
-
-  - no administrator/root access (computer managed by strict corp IT)
-
-  - 32-bit CPU or OS
-
-  - old OS version (e.g. CentOS 6, OSX pre-Yosemite, Windows 7)
-
-- It's better to spend time learning containers than fiddling with the installer!
 
 ---
 

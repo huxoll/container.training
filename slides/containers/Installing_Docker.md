@@ -1,7 +1,7 @@
 
 class: title
 
-# Installing Docker
+# Installing Docker & Git
 
 ![install](images/title-installing-docker.jpg)
 
@@ -11,14 +11,11 @@ class: title
 
 At the end of this lesson, you will know:
 
-* How to install Docker.
+* How to install Docker & Docker Compose.
 
 * When to use `sudo` when running Docker commands.
 
-*Note:* if you were provided with a training VM for a hands-on
-tutorial, you can skip this chapter, since that VM already
-has Docker installed, and Docker has already been setup to run
-without `sudo`.
+* How to install Git.
 
 ---
 
@@ -161,3 +158,13 @@ This will also allow to use remote Engines exactly as if they were local.
   ```bash
   sudo docker version
   ```
+
+---
+
+## Installing Git
+
+* Git for Windows can be downloaded at: https://git-scm.com/download/win
+
+* Git for MacOS can be downloaded at:  https://git-scm.com/download/win
+
+* Instructions for installing Git on Linux:  https://git-scm.com/download/linux

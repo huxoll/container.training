@@ -65,22 +65,24 @@
 
 ## Kubernetes network model: in practice
 
-- The nodes that we are using have been set up to use [Weave](https://github.com/weaveworks/weave)
+- The nodes that we will be using are set up with [PKS](https://pivotal.io/platform/pivotal-container-service) using [NSX-T](https://docs.vmware.com/en/VMware-NSX-T-Data-Center/index.html)
 
-- We don't endorse Weave in a particular way, it just Works For Us
+- NSX-T uses the Container Network Interface (CNI) model to provide:
 
-- Don't worry about the warning about `kube-proxy` performance
+    -   Network Policies
+    -   Pod-Level Networking
+    -   Load Balancing & Ingress Services
+    -   Tenant Isolation
+    -   Micro-Segmentation
 
-- Unless you:
 
-  - routinely saturate 10G network interfaces
-  - count packet rates in millions per second
-  - run high-traffic VOIP or gaming platforms
-  - do weird things that involve millions of simultaneous connections
-    <br/>(in which case you're already familiar with kernel tuning)
+---
 
-- If necessary, there are alternatives to `kube-proxy`; e.g.
-  [`kube-router`](https://www.kube-router.io)
+class: title
+
+## PKS & NSX-T
+
+![pksnsx](images/PKS_NSXT.png)
 
 ---
 
