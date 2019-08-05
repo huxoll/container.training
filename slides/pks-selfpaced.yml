@@ -19,23 +19,9 @@ chapters:
 - pks/about-slides.md
 - shared/toc.md
 - - pks/prereqs.md
-  - |
-    name: part-1
-
-    class: title, self-paced
-
-    Part 1
   - pks/sampleapp.md
-  - shared/composescale.md
-  - shared/hastyconclusions.md
-  - shared/composedown.md
-  - pks/swarmkit.md
-  - shared/declarative.md
-  - pks/swarmmode.md
-  - pks/creatingswarm.md
-  #- pks/machine.md
-  - pks/morenodes.md
-- - pks/firstservice.md
+  - k8s/setup-pks.md
+  - pks/appdeploy.md
   - pks/ourapponswarm.md
   - pks/hostingregistry.md
   - pks/testingregistry.md
