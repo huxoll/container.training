@@ -46,8 +46,8 @@ class:pic
 
  - These services have been packaged up as Docker Containers and you want to be able to quickly deploy this to Production and not have to worry about individual container deployments.
  
-- This is why you prefer K8S which is a robust container scheduler platform to do this for you.
+- This is why you prefer K8s which is a robust container scheduler platform to do this for you.
 
-- As Cloud/Platform Operators, we'll be able to quickly provision a new K8s Cluster and the K8S configuration file and endpoint so that our application can be deployed immediately.
+- As Cloud/Platform Operators, we'll be able to quickly provision a new K8s Cluster and the K8s configuration file and endpoint so that our application can be deployed immediately.
 
 - So let's get started!
