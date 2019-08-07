@@ -34,9 +34,11 @@ Misattributed to Benjamin Franklin
 
 ## Hands-on sections
 
-- The whole workshop is hands-on
+- Much of this workshop is hands-on
 
-- We are going to create & maange a K8s environment with PKS
+- We are going to create & manange a K8s environment with PKS
+
+- We'll also take a closer look at a typical PKS deployment
 
 - You are invited to reproduce all the demos
 

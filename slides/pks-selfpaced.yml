@@ -23,4 +23,6 @@ chapters:
   - k8s/setup-pks.md
   - pks/appdeploy.md
   - pks/harbor.md
+  - pks/managingpks.md
+  
 
