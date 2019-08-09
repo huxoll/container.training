@@ -14,6 +14,7 @@
 
     3. Run `kubeadm init` on the first node (it deploys the control plane on that node)
 
+- Remember: the `nodeX` aliases are valid only on the nodes themselves
     4. Set up Weave (the overlay network)
        <br/>
        (that step is just one `kubectl apply` command; discussed later)

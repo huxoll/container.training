@@ -20,9 +20,9 @@ chapters:
 - shared/toc.md
 - - pks/prereqs.md
   - pks/sampleapp.md
-  - k8s/setup-pks.md
+  - pks/managingpks.md
+  - pks/setup-pks.md
   - pks/appdeploy.md
   - pks/harbor.md
-  - pks/managingpks.md
   
 

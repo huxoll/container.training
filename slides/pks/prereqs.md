@@ -10,7 +10,7 @@
 
 - Be familiar with Docker and containers.
 
-- Be familiar with Kubernetes management using `kubctl`
+- Be familiar with Kubernetes management using `kubectl`
 
 - Access to a Pivotal Container Service (PKS) deployment.
     <br/>
