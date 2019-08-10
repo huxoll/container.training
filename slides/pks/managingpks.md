@@ -34,9 +34,9 @@ On vSphere, Enterprise PKS supports deploying and running Kubernetes clusters in
 
 class:pic
 
-## Conceptual Overview
+## Component Overview
 
-![PKS Arch Overview](images/pks-arch.png)
+.center[![PKS Comp Overview](images/pks-conceptual.png)]
 
 ---
 
@@ -51,11 +51,12 @@ The PKS control plane is deployed on a single VM that includes the following com
 - A User Account and Authentication (UAA) server
 
 ---
+
 class:pic
 
 ## PKS Control Plane
 
-![PKS Arch](images/pks-overview.png)]
+![PKS Arch](images/pks-overview.png)
 
 ---
 
@@ -104,7 +105,7 @@ The PKS control plane enables users to deploy and manage Kubernetes clusters.
 
 For communicating with the PKS control plane, Enterprise PKS provides a command line interface, the PKS CLI.
 
-.center[(e.g. ```cli-vm:~$ pks delete cluster...```)]
+.center[(e.g. ```cli-vm:~$ pks resize my-cluster...```)]
 
 ---
 
@@ -112,20 +113,13 @@ For communicating with the PKS control plane, Enterprise PKS provides a command 
 
 There are three supported topologies in which to deploy NSX-T with Enterprise Pivotal Container Service (Enterprise PKS)
 
-- NAT
+- No-NAT with Virtual Switch
 
-- No NAT with Virtual Switch
+- NAT with Logical Switch
 
-- No NAT with Logical Switch
+- No-NAT with Logical Switch
 
----
-
-## NAT Topology
-- PKS control plane (Ops Manager, BOSH Director, and PKS VM) components are all located on a logical switch that has undergone Network Address Translation on a T0.
-
-- Kubernetes cluster master and worker nodes are located on a logical switch that has undergone Network Address Translation on a T0. This requires DNAT rules to allow access to Kubernetes APIs.
-
-.center[![NAT Topology](images/nsxt-topology-nat.png)]
+.center[![PKS NSXT](images/PKS_NSXT.png)]
 
 ---
 
@@ -139,6 +133,15 @@ There are three supported topologies in which to deploy NSX-T with Enterprise Pi
 
 ---
 
+## NAT with Logical Switch Topology
+- PKS control plane (Ops Manager, BOSH Director, and PKS VM) components are all located on a logical switch that has undergone Network Address Translation on a T0.
+
+- Kubernetes cluster master and worker nodes are located on a logical switch that has undergone Network Address Translation on a T0. This requires DNAT rules to allow access to Kubernetes APIs.
+
+.center[![NAT Topology](images/nsxt-topology-nat.png)]
+
+---
+
 ## No-NAT with Logical Switch Topology
 - PKS control plane (Ops Manager, BOSH Director, and PKS VM) components are using corporate routable IP addresses.
 
@@ -146,3 +149,31 @@ There are three supported topologies in which to deploy NSX-T with Enterprise Pi
 
 - The PKS control plane is deployed inside of the NSX-T network. Both the PKS control plane components (VMs) and the Kubernetes Nodes use corporate routable IP addresses.
 .center[![No-NAT Logical](images/nsxt-topology-no-nat-logical-switch.png)]
+
+---
+
+## Load Balancers with NSX-T
+
+Enterprise PKS deployments on vSphere with NSX-T do not require a load balancer configured to access the PKS API. They require only a DNAT rule configured so that the PKS API host is accessible.
+
+NSX-T handles load balancer creation, configuration, and deletion automatically as part of the Kubernetes cluster create, update, and delete process. 
+
+When a new Kubernetes cluster is created, NSX-T creates and configures a dedicated load balancer tied to it. 
+
+The load balancer is a shared resource designed to provide efficient traffic distribution to master nodes as well as services deployed on worker nodes. Each application service is mapped to a virtual server instance, carved out from the same load balancer.
+
+---
+
+## Network Profiles
+
+You can assign a network profile to a Kubernetes cluster at the time of cluster creation. To assign a network profile to a Kubernetes cluster, you must do the following:
+
+- Define a network profile configuration in a JSON file.
+
+- Create a network profile using the JSON file. 
+
+- Create or update a Kubernetes cluster with the network profile.
+
+.center[e.g. <code>pks create-cluster {cluster-name} --external-hostname {hostname} --plan {plan-name} --network-profile {network-profile-name}</code>]
+
+.center[e.g. <code>pks update-cluster {cluster-name} --network-profile {network-profile-name}</code>]

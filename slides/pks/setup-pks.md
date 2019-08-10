@@ -64,7 +64,7 @@ The PKS API sends a request to the UAA server to validate the user’s token. If
 
 ---
 
-## VM Sizing
+## Plans & VM Sizing
 
 When you configure plans in the Enterprise PKS tile, you provide VM sizes for the master and worker node VMs.
 
@@ -74,29 +74,28 @@ For worker node VMs, you select the number and size based on the needs of your w
 
 ---
 
-## Master Node VM Size
+## Master & Worker Node VM Sizing
 
 The master node VM size is linked to the number of worker nodes. If there are multiple master nodes, all master node VMs are the same size.
 
-The VM sizing per master node can be found [here](https://docs.pivotal.io/pks/1-4/vm-sizing.html#node-sizing-custom).
-
-To customize the size of the Kubernetes master node VM, see [Customize Master and Worker Node VM Size and Type](https://docs.pivotal.io/pks/1-4/vm-sizing.html#node-sizing-custom).
-
----
-
-## Worker Node VM Number and Size
-
 A maximum of 100 pods can run on a single worker node. The actual number of pods that each worker node runs depends on the workload type as well as the CPU and memory requirements of the workload.
 
-To calculate the number and size of worker VMs you require, use the guidelines [here](https://docs.pivotal.io/pks/1-4/vm-sizing.html#node-sizing-custom).
-
 ---
 
-## Customize Master and Worker Node VM Size and Type
+## Listing Plans
 
-You select the CPU, memory, and disk space for the Kubernetes node VMs from a set list in the Enterprise PKS tile. Master and worker node VM sizes and types are selected on a per-plan basis. For more information, see the Plans section of the Enterprise PKS installation topic for your IaaS. For example, [Installing Enterprise PKS on vSphere with NSX-T](https://docs.pivotal.io/pks/1-4/installing-nsx-t.html#plans).
+You can list the current plans through the PKS API with the command <code>pks plans</code> which will return the name, ID and description of each plan configured.  Using the <code>--json</code> flag also returns the number of master and worker nodes configured in JSON format.
 
-While the list of available node VM types and sizes is extensive, the list may not provide the exact type and size of VM that you want. You can use the Ops Manager API to customize the size and types of the master and worker node VMs. For more information, see [How to Create or Remove Custom VM_TYPE Template using the Operations Manager API](https://community.pivotal.io/s/article/How-to-Create-or-Remove-Custom-VMTYPE-Template-using-the-Ops-Manager-API) in the Pivotal Knowledge Base.
+.exercise[
+Type the following command to list configured plans:
+  ```bash
+    pks plans
+```
+This command will return a list of the plans in JSON format:
+```bash
+    pks plans --json
+```
+]
 
 ---
 
@@ -124,12 +123,49 @@ Now that our cluster has been created, we'll need to get a couple of things:
 
 .exercise[
 
-    Using ```pks```, get the Master IP and cluster credentials:
+    _Using ```pks```, get the Master IP and pull-down the cluster credentials:_
   ```bash
   pks cluster <cluster-name>
   pks get-credentials <cluster-name>
+  ```
+  _The kube credentials will be stored in the ```.kube``` folder of your client.  The following command will set the kubenernetes context to your cluser:_
+  ```bash
   kubectl config use-context <cluster-name>
   ```
-  - Be sure to make note of the Master IP address.
-  - The IP & credentials will be stored in the ```.kube``` folder of your client.
 ]
+
+---
+
+## Scaling our Cluster Horizontally
+
+We can scale our cluster horizontally by adding or removing the number of worker nodes.
+.exercise[
+_Run the following command to add worker nodes to our cluster:_
+  ```bash
+  pks resize <cluster-name> --num-nodes 5
+  ```
+_Check the status of the resize:_
+  ```bash
+  pks cluster <cluster-name>
+  ```
+_Finally, let's remove the worker nodes we added:_
+  ```bash
+  pks resize <cluster-name> --num-nodes 3
+  ```
+]
+
+---
+
+## Scaling our Cluster Vertically
+
+We can also scale our cluster horizontall by:
+
+- Logging into Ops Manager
+
+- Selecting the PKS tile
+
+- Selecting the plan that is in use by the cluster(s) you want to resize
+
+- Selecting the desired VM size of our master and worker nodes
+
+- Applying the changes

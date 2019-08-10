@@ -25,7 +25,7 @@ Namespaces with PKS & NSX-T can provide network micro-segmentation on a per-name
 
 - _Lets create a new K8s namespace to help separate our new project from others:_
   ```bash
-  kubectl create namespace yelb
+  kubectl create ns yelb
   ```
 ]
 
@@ -39,9 +39,9 @@ If you do not specify the namespace in the spec, when deploying the application,
 
 .exercise[
 
-- _Run the following command to deploy our app using "yelb.yaml" deployment spec:_
+- _Run the following command to deploy our app using "yelb-lb.yaml" deployment spec:_
   ```bash
-  kubectl apply -f yelb.yaml
+  kubectl apply -f yelb-lb.yaml
   ```
 ]
 
@@ -65,60 +65,7 @@ During the deployment, the required Docker Containers will need to be downloaded
 
 ## Acessing the Application
 
-Now that our application has been successfully deployed, we need to identify which of the K8s Worker Nodes is hosting our UI frontend so that we can access the application using our browser.  Be sure to note the IP address.  We'll use port 30001 which was defined in our Deployment Spec.
-
-.exercise[
-- _Get the unique Pod name for our yelb-ui which you can do so by running the following command_
-  ```bash
-  kubectl get pods --namespace yelb
-  ```
-  _Run the following command and specify the name of your UI Pod name to retrieve more details about this Pod:_
-    ```bash
-  kubectel describe pod yelb-ui-<UUID-of-pod> --namespace yelb
-  ```
-]
-
----
-
-## Yelb UI
-Open a web browser to the IP Address found by running the previous command and using port 30001.  f everything was setup and deployed correctly, we should see our new Yelb application startup as shown in the screenshot below.
-
-.center[![Yelb Home Page](images/yelb-ui.png)]
-
-You have now successfully deployed your first application onto a PKS managed K8s Cluster!  However, it is not a general best practice to expose a particular Worker Node for access which relies on a NAT, especially when we need to scale our application up or down based on demand.
-
----
-
-## External Load Balancing
-
-We can deploy an External Load Balancer in front of our application.  This will be specified in our application deployment spec.<br><br>
-During deployment, PKS will see this request and automatically configure an NSX-T Load Balancer and add the virtual servers to the pool with appropriate firewall rules, etc. all done without having to interact with the Cloud/Platform Operator. Lets see this in action.
-.exercise[
-- _Download the load balancer K8S deployment spec called yelb-lb.yaml file:_
-  ```bash
-  git clone https://github.com/lamw/vmware-pks-app-demo/blob/master/yelb-lb.yaml
-  ```
-  _Deploy our new Yelb application which will include a Load Balancer:_
-    ```bash
-  kubectl apply -f yelb-lb.yaml
-  ```
-]
-
----
-
-class: pic
-
-## Comparing our YAML Deployment Files
-
-If we compare the two YAML files, we can see the only difference is adding the LoadBalancer type which instructs K8s to request a Load Balancer.<br><br>
-
-![Yaml LB Deployment](images/yaml-lb.png)
-
----
-
-## Accessing App Through the Load Balancer
-
-Once the new application has been deployed. We can retrieve the Load Balancer IP.
+Now that our application has been successfully deployed, note that our deployment spec included a Load Balancer service in front of our application.  During deployment, PKS saw this request and automatically configured an NSX-T Load Balancer and added the virtual servers to the pool with appropriate firewall rules, etc. all done without having to interact with the Cloud/Platform Operator.
 
 .exercise[
 - _Retrieve the LB IP with the following command:_
@@ -128,7 +75,14 @@ Once the new application has been deployed. We can retrieve the Load Balancer IP
   _Next, open a browser and enter the IP of our LB (No port needed)_
 ]
 
-Obviously, for Production deployment, you would want to add a DNS entry for this IP Address so that your end users can reach the application with a friendly name rather than IP. 
+---
+
+## Yelb UI
+If everything was setup and deployed correctly, we should see our new Yelb application startup as shown in the screenshot below.
+
+.center[![Yelb Home Page](images/yelb-ui.png)]
+
+You have now successfully deployed your first application onto a PKS managed K8s Cluster!
 
 ---
 
@@ -143,6 +97,6 @@ When Developers are done working with their K8s Cluster and wish to return the r
   ```
   _Delete the cluster:_
     ```bash
-  pks delete-cluster <NAME-OF-PKS-CLUTER>
+  pks delete-cluster <cluster-name>
   ```
 ]

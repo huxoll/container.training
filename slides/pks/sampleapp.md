@@ -17,7 +17,7 @@
 
 - You'll also need to download the Yelb deployment yaml file:
   ```bash
-  git clone https://github.com/lamw/vmware-pks-app-demo/blob/master/yelb.yaml
+  wget https://raw.githubusercontent.com/lamw/vmware-pks-app-demo/master/yelb-lb.yaml
   ```
 
 ]
