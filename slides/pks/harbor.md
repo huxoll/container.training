@@ -88,7 +88,7 @@ First, we'll download an updated YAML file that references the new registry, the
 _Pull down the updated YAML:_
 
 ```bash
-git clone https://github.com/lamw/vmware-pks-app-demo/blob/master/yelb-lb-harbor.yaml
+wget https://raw.githubusercontent.com/lamw/vmware-pks-app-demo/master/yelb-lb-harbor.yaml
 ```
 _Now let's re-deploy our app:_
 

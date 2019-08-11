@@ -130,10 +130,6 @@ $ docker ps -l
 
 * This is an enterprise-class, carrier-grade, ISO-compliant company name generator!
 
-  (With 50% more bullshit than the average competition!)
-
-  (Wait, was that 50% more, or 50% less? *Anyway!*)
-
   ![web application 1](images/webapp-in-blue.png)
 
 ---

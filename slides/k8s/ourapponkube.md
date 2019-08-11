@@ -103,15 +103,13 @@ We should now see the `worker`, well, working happily.
 
 - Now we would like to access the Web UI
 
-- We will expose it with a `NodePort`
-
-  (just like we did for the registry)
+- We will expose it with a `LoadBalancer`
 
 .exercise[
 
-- Create a `NodePort` service for the Web UI:
+- Create a `LoadBalancer` service for the Web UI:
   ```bash
-  kubectl expose deploy/webui --type=NodePort --port=80
+  kubectl expose deploy/webui --type=LoadBalancer --port=80
   ```
 
 - Check the port that was allocated:
@@ -125,11 +123,11 @@ We should now see the `worker`, well, working happily.
 
 ## Accessing the web UI
 
-- We can now connect to *any node*, on the allocated node port, to view the web UI
+- We can now connect to `webui`, on the allocated IP address, to view the web UI
 
 .exercise[
 
-- Open the web UI in your browser (http://node-ip-address:3xxxx/)
+- Open the web UI in your browser (http://service-ip-address/)
 
 <!-- ```open http://node1:3xxxx/``` -->
 

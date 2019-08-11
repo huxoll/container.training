@@ -24,6 +24,7 @@ chapters:
   - pks/setup-pks.md
   - pks/appdeploy.md
   - pks/pks-monitoring.md
+  - pks/pks-ha-dr.md
   - pks/harbor.md
   
 

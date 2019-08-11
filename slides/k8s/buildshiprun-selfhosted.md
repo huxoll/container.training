@@ -1,26 +1,20 @@
 ## Self-hosting our registry
 
-*Note: this section shows how to run the Docker
-open source registry and use it to ship images
-on our cluster. While this method works fine,
-we recommend that you consider using one of the
-hosted, free automated build services instead.
-It will be much easier!*
+For this section we'll be using VMware's Harbor.  Harbor is an enterprise-class registry server that stores and distributes container images. Harbor allows you to store and manage images for use with Enterprise Pivotal Container Service.
 
-*If you need to run a registry on premises,
-this section gives you a starting point, but
-you will need to make a lot of changes so that
-the registry is secured, highly available, and
-so that your build pipeline is automated.*
+Harbor extends the open source Docker Distribution by adding the functionalities usually required by an enterprise, such as security, identity, and management. As an enterprise private registry, Harbor offers enhanced performance and security.
 
 ---
 
-## Using the open source registry
+## Prequisites to using Harbr
 
-- We need to run a `registry` container
+Harbor is usually deployed along side PKS.  Before Harbor can be used to deploy images to you Kubernetes cluster, you will need to be sure Harbor's CA certificate is included in BOSH's certificate trust.
 
-- It will store images and layers to the local filesystem
-  <br/>(but you can add a config file to use S3, Swift, etc.)
+Steps for completing This process are published [here](https://www.virtuallyghetto.com/2018/04/getting-started-with-vmware-pivotal-container-service-pks-part-7-harbor.html).
+
+---
+
+## Using a Private Registry with Docker
 
 - Docker *requires* TLS when communicating with the registry
 
@@ -28,77 +22,72 @@ so that your build pipeline is automated.*
 
   - or with the Engine flag `--insecure-registry`
 
-- Our strategy: publish the registry container on a NodePort,
-  <br/>so that it's available through `127.0.0.1:xxxxx` on each node
+- Our strategy: Set Docker Engine flag to `--insecure-registry`.
 
 ---
 
-## Deploying a self-hosted registry
+## Enabling Docker to use Insecure Registries
 
-- We will deploy a registry container, and expose it with a NodePort
+To avoid using TLC when communicating with a registry, we can configure Docker to allow by setting the `--insecure-registry` flag.
 
 .exercise[
-
-- Create the registry service:
+- Change path to the Docker directory:
   ```bash
-  kubectl create deployment registry --image=registry
+  cd /etc/docker
   ```
-
-- Expose it on a NodePort:
+- If not already present, create the file `daemon.json`, set the flag, save and restart Docker:
   ```bash
-  kubectl expose deploy/registry --port=5000 --type=NodePort
+  vi daemon.json:
+  {
+    "insecure-registries" : [ "registryIP:8080" ]
+  }
+  [esc]:wq
+  systemctl daemon-reload
+  systemctl restart docker
   ```
-
 ]
 
 ---
 
 ## Connecting to our registry
 
-- We need to find out which port has been allocated
+- Let's test the connection to our registy by logging in with Docker
 
 .exercise[
 
 - View the service details:
   ```bash
-  kubectl describe svc/registry
+  docker login {registry.url.or.IP} -u {username} -p {password}
   ```
-
-- Get the port number programmatically:
+- We should see the following:
   ```bash
-  NODEPORT=$(kubectl get svc/registry -o json | jq .spec.ports[0].nodePort)
-  REGISTRY=127.0.0.1:$NODEPORT
-  ```
+  WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+  WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+  Configure a credential helper to remove this warning. See
+  https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
+  Login Succeeded
+  ```
 ]
 
 ---
 
-## Testing our registry
+## Setting our Environment Variable
 
-- A convenient Docker registry API route to remember is `/v2/_catalog`
+- For easier automation, we can set an environment variable to point to our Harbor registry
 
 .exercise[
 
-<!-- ```hide kubectl wait deploy/registry --for condition=available```-->
-
-- View the repositories currently held in our registry:
+- Set our environment variable:
   ```bash
-  curl $REGISTRY/v2/_catalog
+  REGISTRY={harbor.url.or.IP:port}/{repository}
   ```
-
 ]
 
---
-
-We should see:
-```json
-{"repositories":[]}
-```
 
 ---
 
-## Testing our local registry
+## Testing our Harbor Registry
 
 - We can retag a small image, and push it to the registry
 
@@ -119,23 +108,11 @@ We should see:
 
 ---
 
-## Checking again what's on our local registry
+## Checking our Harbor Registry
 
-- Let's use the same endpoint as before
+- We can verify the image was pushing by logging into our Harbor UI
 
-.exercise[
-
-- Ensure that our busybox image is now in the local registry:
-  ```bash
-  curl $REGISTRY/v2/_catalog
-  ```
-
-]
-
-The curl command should now output:
-```json
-{"repositories":["busybox"]}
-```
+.center[![harbor busybox](images/harbor-busybox.png)]
 
 ---
 
@@ -213,18 +190,11 @@ class: extra-details
 
 ---
 
-## Checking the content of the registry
+## Checking the Content Harbor
 
 - All our images should now be in the registry
 
-.exercise[
-
-- Re-run the same `curl` command as earlier:
-  ```bash
-  curl $REGISTRY/v2/_catalog
-  ```
-
-]
+.center[![harbor dockercoins](images/harbor-dockercoins.png)]
 
 *In these slides, all the commands to deploy
 DockerCoins will use a $REGISTRY environment

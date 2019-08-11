@@ -291,12 +291,6 @@ The error that we see is expected: the Kubernetes API requires authentication.
   ```bash
   kubectl get pods --all-namespaces
   ```
-
-- Since Kubernetes 1.14, we can also use `-A` as a shorter version:
-  ```bash
-  kubectl get pods -A
-  ```
-
 ]
 
 *Here are our system pods!*
@@ -305,18 +299,21 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
 ## What are all these control plane pods?
 
-- `etcd` is our etcd server
+kube-system
+- `heapster` - metrics aggregator & processor
+- `kube-dns` - provides DNS-based service discovery
+- `kubernetes-dashboard` - self explanatory
+- `metrics-server` - serves resource usage metrics for pods and nodes
+- `monitoring-influxdb` - time-series database for monitoring
 
-- `kube-apiserver` is the API server
+pks-system
+- `cert-generator` - self explanatory
+- `event-controller` - collects Kubernetes API events
+- `fluent-bit` - log aggregator
+- `sink-controller` - responsible for adding/removing sinks (metrics/logs aggregators)
+- `telemetry-agent` - sends metrics to the Customer Experience Improvement Program
 
-- `kube-controller-manager` and `kube-scheduler` are other control plane components
-
-- `kube-dns` provides DNS-based service discovery.
-
-- `kube-proxy` is the (per-node) component managing port mappings and such
-
-- the `READY` column indicates the number of containers in each pod
-
+the `READY` column indicates the number of containers in each pod
 
 ---
 
@@ -344,7 +341,7 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
   - `kubectl create --namespace=X` to create something in namespace X
 
-- We can use `-A`/`--all-namespaces` with most commands that manipulate multiple objects
+- We can use `--all-namespaces` with most commands that manipulate multiple objects
 
 - Examples:
 
@@ -352,115 +349,3 @@ The error that we see is expected: the Kubernetes API requires authentication.
 
   - `kubectl label` can add/remove/update labels across multiple namespaces
 
----
-
-class: extra-details
-
-## What about `kube-public`?
-
-.exercise[
-
-- List the pods in the `kube-public` namespace:
-  ```bash
-  kubectl -n kube-public get pods
-  ```
-
-]
-
-Nothing!
-
-`kube-public` is created by kubeadm & [used for security bootstrapping](https://kubernetes.io/blog/2017/01/stronger-foundation-for-creating-and-managing-kubernetes-clusters).
-
----
-
-class: extra-details
-
-## Exploring `kube-public`
-
-- The only interesting object in `kube-public` is a ConfigMap named `cluster-info`
-
-.exercise[
-
-- List ConfigMap objects:
-  ```bash
-  kubectl -n kube-public get configmaps
-  ```
-
-- Inspect `cluster-info`:
-  ```bash
-  kubectl -n kube-public get configmap cluster-info -o yaml
-  ```
-
-]
-
-Note the `selfLink` URI: `/api/v1/namespaces/kube-public/configmaps/cluster-info`
-
-We can use that!
-
----
-
-class: extra-details
-
-## Accessing `cluster-info`
-
-- Earlier, when trying to access the API server, we got a `Forbidden` message
-
-- But `cluster-info` is readable by everyone (even without authentication)
-
-.exercise[
-
-- Retrieve `cluster-info`:
-  ```bash
-  curl -k https://10.96.0.1/api/v1/namespaces/kube-public/configmaps/cluster-info
-  ```
-
-]
-
-- We were able to access `cluster-info` (without auth)
-
-- It contains a `kubeconfig` file
-
----
-
-class: extra-details
-
-## Retrieving `kubeconfig`
-
-- We can easily extract the `kubeconfig` file from this ConfigMap
-
-.exercise[
-
-- Display the content of `kubeconfig`:
-  ```bash
-    curl -sk https://10.96.0.1/api/v1/namespaces/kube-public/configmaps/cluster-info \
-         | jq -r .data.kubeconfig
-  ```
-
-]
-
-- This file holds the canonical address of the API server, and the public key of the CA
-
-- This file *does not* hold client keys or tokens
-
-- This is not sensitive information, but allows us to establish trust
-
----
-
-class: extra-details
-
-## What about `kube-node-lease`?
-
-- Starting with Kubernetes 1.14, there is a `kube-node-lease` namespace
-
-  (or in Kubernetes 1.13 if the NodeLease feature gate is enabled)
-
-- That namespace contains one Lease object per node
-
-- *Node leases* are a new way to implement node heartbeats
-
-  (i.e. node regularly pinging the control plane to say "I'm alive!")
-
-- For more details, see [KEP-0009] or the [node controller documentation]
-
-[KEP-0009]: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md
-[node controller documentation]: https://kubernetes.io/docs/concepts/architecture/nodes/#node-controller

@@ -418,3 +418,17 @@ class: extra-details
 
 - It's very unlikely that our concerted pings manage to produce
   even a modest blip at Cloudflare's NOC!
+
+---
+
+## Deleting the deployment
+
+Let's go a head and delete our `pingpong` deployment
+
+.exercise[
+
+- List most resource types:
+  ```bash
+  kubectl delete deployment/pingpong
+  ```
+]

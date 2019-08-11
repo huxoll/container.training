@@ -82,7 +82,7 @@
 
 - There are also commercial products to run our own registry
 
-  (Docker EE, Quay...)
+  (Docker EE, Quay, Harbor...)
 
 - And open source options, too!
 
