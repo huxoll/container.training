@@ -58,7 +58,7 @@ The PKS API sends a request to the UAA server to validate the user’s token. If
     Using ```pks```, let's login & create our first cluster:
   ```bash
   pks login -a <your.pks.endpoint> -u <user> -p <password> -k
-  pks create-cluster <cluster-name> --external-hostname <external-hostname.com> --plan small --num-nodes 3
+  pks create-cluster <cluster-name> --external-hostname <external-hostname.com> --plan small --num-nodes 2
   ```
 ]
 
@@ -142,7 +142,7 @@ We can scale our cluster horizontally by adding or removing the number of worker
 .exercise[
 _Run the following command to add worker nodes to our cluster:_
   ```bash
-  pks resize <cluster-name> --num-nodes 5
+  pks resize <cluster-name> --num-nodes 3
   ```
 _Check the status of the resize:_
   ```bash
@@ -150,7 +150,7 @@ _Check the status of the resize:_
   ```
 _Finally, let's remove the worker nodes we added:_
   ```bash
-  pks resize <cluster-name> --num-nodes 3
+  pks resize <cluster-name> --num-nodes 2
   ```
 ]
 

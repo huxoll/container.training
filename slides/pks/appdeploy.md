@@ -86,7 +86,7 @@ You have now successfully deployed your first application onto a PKS managed K8s
 
 ---
 
-## Decomissioning K8s Cluster
+<!-- ## Decomissioning K8s Cluster
 
 When Developers are done working with their K8s Cluster and wish to return the resources, it is simply one command to delete the Cluster.
 
@@ -98,5 +98,16 @@ When Developers are done working with their K8s Cluster and wish to return the r
   _Delete the cluster:_
     ```bash
   pks delete-cluster <cluster-name>
+  ```
+] -->
+
+## Deleting the Deployment
+
+To set up for our next lab, let's delete the current deployment.
+
+.exercise[
+- _Delete the deployment my running the following command:_
+  ```bash
+  kubectl delete -f yelb-lb.yaml
   ```
 ]
