@@ -27,9 +27,8 @@
 
 - Build the image from the Dockerfile and run:
   ```bash
-  cd cli_container
-  docker build -t cli_client .
-  docker run -it cli_client
+
+  docker run -it 172.20.100.21/library/pkstraining:v1
   ```
 ]
 

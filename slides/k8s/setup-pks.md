@@ -27,9 +27,8 @@
 
 - Build the image from the Dockerfile and run:
   ```bash
-  cd cli_container
-  docker build -t cli_client .
-  docker run -it cli_client
+  docker run -it 172.20.100.21/library/pkstraining:v1
+
   ```
 ]
 
@@ -49,8 +48,8 @@
     *Note: Cluster creation can take up to 30 mins*<br><br>
     Using ```pks```, let's login & create our first cluster:
   ```bash
-  pks login -a <your.pks.endpoint> -u <user> -p <password> -k
-  pks create-cluster <cluster-name> --external-hostname <external-hostname.com> --plan small --num-nodes 3
+  pks login -a uaa.pcf.paycomhq.com -u <userID> -p <password> -k
+  pks create-cluster <userID-cluster> --external-hostname <userid-cluster>.whatever.com --plan Tier1 --num-nodes 1
   ```
 ]
 

@@ -8,13 +8,13 @@ Let's look at options for configuring PKS on vSphere to support stateful apps us
 
 There are several factors to consider when running stateful apps in Kubernetes:
 
-- _Pods are ephemeral by nature._ Data that needs to be persisted must be accessible on restart and rescheduling of a pod.
+- _Pods are ephemeral by nature._ Data that needs to be persisted must be accessible on restart and rescheduling of a Pod.
 
-- _When a pod is rescheduled, it may be on a different host._ Storage must be available on the new host for the pod to start gracefully.
+- _When a Pod is rescheduled, it may be on a different host._ Storage must be available on the new host for the Pod to start gracefully.
 
 - _The app should not manage the volume and data._ The underlying infrastructure should handle the complexity of unmounting and mounting.
 
-- _Certain apps have a strong sense of identity._ When a container with a certain ID uses a disk, the disk becomes tied to that container. If a pod with a certain ID gets rescheduled, the disk associated with that ID must be reattached to the new pod instance.
+- _Certain apps have a strong sense of identity._ When a container with a certain ID uses a disk, the disk becomes tied to that container. If a Pod with a certain ID gets rescheduled, the disk associated with that ID must be reattached to the new Pod instance.
 
 ---
 
@@ -73,9 +73,9 @@ The claim defines the actual virtual disk to be created by referencing the stora
 - Disk Size
 - Access Modes
 
-In Dynamic Volume creation, the vmdk is automatically created and bound to the PVC as part of the PVC creation.  App developers define POD specs that create PODs and mount the volumes created through the PVC.
+In Dynamic Volume creation, the vmdk is automatically created and bound to the PVC as part of the PVC creation.  App developers define Pod specs that create Pods and mount the volumes created through the PVC.
 
-If a POD fails, the disk will persist.  If a replica set has been defined on the POD, it will be recreated and the disk will be mounted on its file system.
+If a Pod fails, the disk will persist.  If a replica set has been defined on the Pod, it will be recreated and the disk will be mounted on its file system.
 
 _Let's see how this works!_
 
@@ -145,8 +145,6 @@ Using the YAML files we created, we'll create a StorageClass and PVC
     ```
 ]
 
-If you can, open vCenter and verify the vmdk has been created under the "kubevols" folder on the datastore.
-
 ---
 
 ## Verify the PVC
@@ -167,7 +165,7 @@ Let's verify the PVC has been bound to a vSphere volume.
     redis-worker-claim   Bound    pvc-41eeb414-bd74-11e9-8072-00505688879c   2Gi        RWO            thin-disk      72m
     ```
 
-- _More info can be found by running `kubectl describe pvc/redis-worker-claim`
+- _More info can be found by running `kubectl describe pvc/redis-worker-claim`_
 ]
 
 ---
@@ -204,9 +202,9 @@ class: pic
 
 ---
 
-## Redeploy the Deployment Manifest
+## Apply the New Deployment Manifest
 
-We'll apply the new deployment manifiest which will attach the volume to our "redis-server" POD.
+We'll apply the new deployment manifiest which will attach the volume to our "redis-server" pod.
 
 .exercise[
 
@@ -215,5 +213,43 @@ We'll apply the new deployment manifiest which will attach the volume to our "re
     ```bash
     kubectl apply -f yelb-lb-pvc.yaml
     ```
+]
+
+---
+
+## Adding Data & Deleting Pod
+
+Now, let's open the app and create some data.  Since we've added a persistent volume, our data will be available even if we delete the "redis" Pod.  Once we've added some data, let's delete the "redis" pod.
+
+.exercise[
+
+- _List the pods to find the "redis" pod:_
+
+    ```bash
+    kubectl get pods --namespace=yelb
+    ```
+- _Now let's delete the "redis" pod:_
+
+    ```bash
+    kubectl delete pod/redis-server-xxxxxxxxxx --namespace=yelb
+    ```
+- _Remember to include the namespace!_
+]
+
+---
+
+## Data Persistence
+
+When you list the pods again, you will notice the "redis" pod is terminating and a new pod is being created in it's place.  Once the new pod is available, you can re-launch the app and see that the data has been persisted!
+
+.exercise[
+
+- _List the pods to observe the terminated & recreated pod pod:_
+
+    ```bash
+    kubectl get pods  --namespace=yelb
+    ```
+- _Now let's re-launch the app.  You will see the data is still there!_
+
 ]
 
