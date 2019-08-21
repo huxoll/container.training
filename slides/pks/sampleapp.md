@@ -10,15 +10,15 @@
 
 .exercise[
 
-- Clone the repository on Docker host:
+- Clone the repository on Docker host and switch to `yelb` director:
   ```bash
-  git clone https://github.com/mreferre/yelb  
+  git clone @@GITREPO@@
+  cd yelb/
   ```
 
-- You'll also need to download the Yelb deployment yaml file:
-  ```bash
-  wget https://raw.githubusercontent.com/lamw/vmware-pks-app-demo/master/yelb-lb.yaml
-  ```
+- Note the K8s Manifests (yaml) that are also included in the folder.
+`yelb-lb.yaml`
+`yelb-lb-pvc.yaml`
 
 ]
 
