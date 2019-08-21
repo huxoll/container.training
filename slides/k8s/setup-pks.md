@@ -20,15 +20,15 @@
 
 .exercise[
 
-- Using ```git```, pull down the Dockerfile to your Docker host:
+- From the cloned project, `cd` to the `cli-container` folder and build the Dockerfile:
   ```bash
-  git clone https://github.com/dahr/cli_container.git
+  cd cli-container
+  docker build -t <your-name-of-image> .
   ```
 
-- Build the image from the Dockerfile and run:
+- Run the image:
   ```bash
-  cd cli_container
-  docker build -t <your-name-of-image> .
+  docker run -it <your-name-of-image>
 
   ```
 ]
@@ -49,8 +49,8 @@
     *Note: Cluster creation can take up to 30 mins*<br><br>
     Using ```pks```, let's login & create our first cluster:
   ```bash
-  pks login -a uaa.pcf.paycomhq.com -u <userID> -p <password> -k
-  pks create-cluster <userID-cluster> --external-hostname <userid-cluster>.whatever.com --plan Tier1 --num-nodes 1
+  pks login -a <pksapi.yourcompany.com> -u <userID> -p <password> -k
+  pks create-cluster <userID-cluster> --external-hostname <userid-cluster>.yourcompany.com --plan <plan-name> --num-nodes 1
   ```
 ]
 
@@ -62,11 +62,11 @@ We can check the status of clusters using the PKS CLI.
 
 .exercise[
 
-    Using ```pks```, check the status of your clusters:
+    Using `pks`, check the status of your clusters:
   ```bash
   pks clusters
   ```
-  When ```Status``` shows ```succeeded```, our cluster is ready! 
+  When `Status` shows `succeeded`, our cluster is ready! 
 ]
 
 ---
