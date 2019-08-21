@@ -85,10 +85,11 @@ We can now re-deploy our application but rather than using an image from Docker'
 First, we'll download an updated YAML file that references the new registry, then we'll re-deploy our app.
 
  .exercise[
-_Pull down the updated YAML:_
+_Updated yaml is included in the yelp app folder:_
 
 ```bash
-wget https://raw.githubusercontent.com/lamw/vmware-pks-app-demo/master/yelb-lb-harbor.yaml
+cd yelb
+cat yelb-lb-harbor.yaml
 ```
 _Now let's re-deploy our app:_
 
