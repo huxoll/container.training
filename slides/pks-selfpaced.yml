@@ -19,14 +19,15 @@ chapters:
 - pks/about-slides.md
 - shared/toc.md
 - - pks/prereqs.md
-  - pks/sampleapp.md
   - pks/managingpks.md
   - pks/setup-pks.md
   - pks/k8s-dashboard.md
-- - pks/appdeploy.md
+- - pks/sampleapp.md
+  - pks/appdeploy.md
   - pks/pv-pvc.md
   - pks/pks-monitoring.md
   - pks/pks-ha-dr.md
+  - pks/patching-upgrades.md
   - pks/harbor.md
   
 

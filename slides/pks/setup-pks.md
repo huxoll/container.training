@@ -122,10 +122,11 @@ Now that our cluster has been created, we'll need to get a couple of things:
 
 .exercise[
 
-    _Using ```pks```, get the Master IP and pull-down the cluster credentials:_
+    _Get the Master IP, obtain the cluster credentials & update the /etc/host file:_
   ```bash
   pks cluster <cluster-name>
   pks get-credentials <cluster-name>
+  vi /etc/hosts
   ```
   _The kube credentials will be stored in the ```.kube``` folder of your client.  The following command will set the kubenernetes context to your cluser:_
   ```bash

@@ -185,8 +185,9 @@ class:pic
 At this point, we would need to add the "volumeMounts" and "volumes" parameters to our "redis-server" deployment spec, however, this has been done for you!
 
 _Download the modified deployment manifest from:_
-
-`https://raw.githubusercontent.com/dahr/yelb/master/yelb-lb-pvc.yaml`
+`wget https://raw.githubusercontent.com/dahr/yelb/master/redis-sc.yaml`<br>
+`wget https://raw.githubusercontent.com/dahr/yelb/master/redis-worker-claim.yaml`<br>
+`wget https://raw.githubusercontent.com/dahr/yelb/master/yelb-lb-pvc.yaml`<br>
 
 Take a minute to view the modifications that were made.
 
@@ -211,6 +212,7 @@ We'll apply the new deployment manifiest which will attach the volume to our "re
 - _Apply the new deployment manifest:_
 
     ```bash
+    wget https://raw.githubusercontent.com/dahr/yelb/master/yelb-lb-pvc.yaml
     kubectl apply -f yelb-lb-pvc.yaml
     ```
 ]
